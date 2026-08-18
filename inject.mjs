@@ -19,7 +19,7 @@ const indexPath=path.join(dist,'index.html');
 let html=fs.readFileSync(indexPath,'utf8');
 const obsolete=['/photo-nano.js','/action-guide.js','/setup-actions.js','/beginner-mirror.js','/smart-mirror-photo-override.js','/beginner-detail-layer.js','/beginner-coach.js','/guided-projects-v2.js','/setup-wizard.js','/project-visual-fix-v4.js'];
 for(const src of obsolete){const escaped=src.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');html=html.replace(new RegExp(`<script\\s+src=["']${escaped}["']><\\/script>\\s*`,'g'),'')}
-const scripts=['/setup-course-v2.js','/project-course-v3.js','/course-quality-v5.js','/visual-registry-v6.js','/command-copy-v6.js','/hardware-accuracy-v7.js','/gpio-accuracy-v8.js'];
+const scripts=['/setup-course-v2.js','/project-course-v3.js','/course-quality-v5.js','/visual-registry-v6.js','/command-copy-v6.js','/hardware-accuracy-v7.js','/gpio-accuracy-v8.js','/gpio-lab-v9.js'];
 for(const src of scripts){const tag=`<script src="${src}"></script>`;if(!html.includes(tag))html=html.replace('</body>',`${tag}\n</body>`)}
 fs.writeFileSync(indexPath,html,'utf8');
-console.log('Built dist with detailed Pi setup, exact visuals, per-command copy controls, Pi 5 hardware accuracy, and beginner-safe GPIO guidance.');
+console.log('Built dist with detailed Pi setup, exact visuals, command copy controls, Pi 5 hardware accuracy, and verified GPIO17 LED lab guidance.');

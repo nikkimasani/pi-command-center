@@ -21,17 +21,17 @@ let html=fs.readFileSync(indexPath,'utf8');
 const obsolete=[
   '/photo-nano.js','/action-guide.js','/setup-actions.js','/beginner-mirror.js',
   '/smart-mirror-photo-override.js','/beginner-detail-layer.js','/beginner-coach.js',
-  '/guided-projects-v2.js'
+  '/guided-projects-v2.js','/setup-wizard.js'
 ];
 for(const src of obsolete){
   const escaped=src.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
   html=html.replace(new RegExp(`<script\\s+src=["']${escaped}["']><\\/script>\\s*`,'g'),'');
 }
 
-const scripts=['/setup-wizard.js','/project-course-v3.js'];
+const scripts=['/setup-course-v2.js','/project-course-v3.js'];
 for(const src of scripts){
   const tag=`<script src="${src}"></script>`;
   if(!html.includes(tag)) html=html.replace('</body>',`${tag}\n</body>`);
 }
 fs.writeFileSync(indexPath,html,'utf8');
-console.log('Built dist with resilient v3 beginner walkthroughs for all 10 projects.');
+console.log('Built dist with detailed visual Pi setup course and resilient v3 project walkthroughs.');

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pi-command-v11';
+const CACHE_NAME = 'pi-command-v12';
 
 const STATIC_ASSETS = [
   '/',
@@ -16,6 +16,7 @@ const STATIC_ASSETS = [
   '/smart-mirror-photo-override.js',
   '/beginner-detail-layer.js',
   '/beginner-coach.js',
+  '/assets/boot-screen.jpg',
   '/assets/dsi-ribbon-reference.jpg',
   '/assets/pi5-port-map-reference.jpg',
   '/assets/smart-mirror-finished-reference.jpg',

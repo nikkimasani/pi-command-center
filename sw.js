@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pi-command-v10';
+const CACHE_NAME = 'pi-command-v11';
 
 const STATIC_ASSETS = [
   '/',
@@ -13,11 +13,16 @@ const STATIC_ASSETS = [
   '/action-guide.js',
   '/setup-actions.js',
   '/beginner-mirror.js',
+  '/smart-mirror-photo-override.js',
   '/beginner-detail-layer.js',
   '/beginner-coach.js',
   '/assets/dsi-ribbon-reference.jpg',
   '/assets/pi5-port-map-reference.jpg',
-  '/assets/smart-mirror-finished-reference.jpg'
+  '/assets/smart-mirror-finished-reference.jpg',
+  '/assets/smart-mirror/dsi-find.jpg',
+  '/assets/smart-mirror/dsi-align.jpg',
+  '/assets/smart-mirror/dsi-seated.jpg',
+  '/assets/smart-mirror/dsi-wrong.jpg'
 ];
 
 const OFFLINE_HTML = `<!doctype html>
@@ -31,7 +36,7 @@ function enhanceHtml(response){
   const type=response.headers.get('content-type')||'';
   if(!type.includes('text/html')) return Promise.resolve(response);
   return response.text().then(html=>{
-    for(const src of ['/photo-nano.js','/photo-extra-small.js','/setup-wizard.js','/action-guide.js','/setup-actions.js','/beginner-mirror.js','/beginner-detail-layer.js','/beginner-coach.js']){
+    for(const src of ['/photo-nano.js','/photo-extra-small.js','/setup-wizard.js','/action-guide.js','/setup-actions.js','/beginner-mirror.js','/smart-mirror-photo-override.js','/beginner-detail-layer.js','/beginner-coach.js']){
       const tag=`<script src="${src}"></script>`;
       if(!html.includes(tag)) html=html.replace('</body>',`${tag}</body>`);
     }

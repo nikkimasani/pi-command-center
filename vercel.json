@@ -1,4 +1,6 @@
 {
+  "buildCommand": "node inject.mjs",
+  "outputDirectory": "dist",
   "headers": [
     {
       "source": "/",

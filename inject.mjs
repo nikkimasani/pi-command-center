@@ -17,10 +17,10 @@ for(const name of fs.readdirSync(root)){
 
 const indexPath=path.join(dist,'index.html');
 let html=fs.readFileSync(indexPath,'utf8');
-const scripts=['/photo-nano.js','/photo-extra-small.js','/setup-wizard.js'];
+const scripts=['/photo-nano.js','/photo-extra-small.js','/setup-wizard.js','/action-guide.js'];
 for(const src of scripts){
   const tag=`<script src="${src}"></script>`;
   if(!html.includes(tag)) html=html.replace('</body>',`${tag}\n</body>`);
 }
 fs.writeFileSync(indexPath,html,'utf8');
-console.log('Built dist with photorealistic visuals and integrated 18-step setup wizard.');
+console.log('Built dist with photorealistic visuals, integrated setup wizard, and action-by-action guided walkthroughs.');

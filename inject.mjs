@@ -28,10 +28,10 @@ for(const src of obsolete){
   html=html.replace(new RegExp(`<script\\s+src=["']${escaped}["']><\\/script>\\s*`,'g'),'');
 }
 
-const scripts=['/setup-course-v2.js','/project-course-v3.js'];
+const scripts=['/setup-course-v2.js','/project-course-v3.js','/project-visual-fix-v4.js'];
 for(const src of scripts){
   const tag=`<script src="${src}"></script>`;
   if(!html.includes(tag)) html=html.replace('</body>',`${tag}\n</body>`);
 }
 fs.writeFileSync(indexPath,html,'utf8');
-console.log('Built dist with detailed visual Pi setup course and resilient v3 project walkthroughs.');
+console.log('Built dist with detailed visual Pi setup course and inline project visuals.');

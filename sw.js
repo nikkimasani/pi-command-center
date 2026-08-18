@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pi-command-v8';
+const CACHE_NAME = 'pi-command-v9';
 
 const STATIC_ASSETS = [
   '/',
@@ -12,6 +12,7 @@ const STATIC_ASSETS = [
   '/setup-wizard.js',
   '/action-guide.js',
   '/setup-actions.js',
+  '/beginner-mirror.js',
   '/assets/dsi-ribbon-reference.jpg',
   '/assets/pi5-port-map-reference.jpg',
   '/assets/smart-mirror-finished-reference.jpg'
@@ -28,7 +29,7 @@ function enhanceHtml(response){
   const type=response.headers.get('content-type')||'';
   if(!type.includes('text/html')) return Promise.resolve(response);
   return response.text().then(html=>{
-    for(const src of ['/photo-nano.js','/photo-extra-small.js','/setup-wizard.js','/action-guide.js','/setup-actions.js']){
+    for(const src of ['/photo-nano.js','/photo-extra-small.js','/setup-wizard.js','/action-guide.js','/setup-actions.js','/beginner-mirror.js']){
       const tag=`<script src="${src}"></script>`;
       if(!html.includes(tag)) html=html.replace('</body>',`${tag}</body>`);
     }

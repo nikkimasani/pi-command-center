@@ -17,7 +17,10 @@ for(const name of fs.readdirSync(root)){
 
 const indexPath=path.join(dist,'index.html');
 let html=fs.readFileSync(indexPath,'utf8');
-const script='<script src="/photo-nano.js"></script>';
-if(!html.includes(script)) html=html.replace('</body>',`${script}\n</body>`);
+const scripts=['/photo-nano.js','/photo-extra-small.js'];
+for(const src of scripts){
+  const tag=`<script src="${src}"></script>`;
+  if(!html.includes(tag)) html=html.replace('</body>',`${tag}\n</body>`);
+}
 fs.writeFileSync(indexPath,html,'utf8');
-console.log('Built dist with photorealistic visual layer.');
+console.log('Built dist with complete photorealistic visual layers.');

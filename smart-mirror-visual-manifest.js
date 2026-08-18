@@ -1,10 +1,10 @@
 (()=>{
 'use strict';
 const VISUALS={
-  'smart-mirror/p1/s6-microsd-insert.jpg':{src:'/assets/smart-mirror/p1/s6-microsd-insert.jpg',alt:'Raspberry Pi 5 underside with SanDisk microSD aligned to the card slot',caption:'Insert the microSD card with the Pi powered off. The card should slide in straight with light pressure.'},
-  'smart-mirror/p2/s2-display-dsi.jpg':{src:'/assets/smart-mirror/p2/s2-display-dsi.jpg',alt:'Hosyond display controller board with the 15-pin DSI ribbon correctly aligned and seated',caption:'Display-side DSI connection. Keep the ribbon straight, fully seated, and latched before applying power.'},
+  'smart-mirror/p1/s6-microsd-insert.jpg':{src:'https://www.raspberrypi.com/app/uploads/2024/10/BUMPER-AND-CARD-1-800x536.jpg',alt:'Raspberry Pi 5 microSD insertion orientation reference',caption:'Insert the microSD card with the Pi powered off. This official Raspberry Pi reference shows the slot and insertion direction; your SanDisk 128 GB card uses the same physical orientation.',source:'Raspberry Pi'},
+  'smart-mirror/p2/s2-display-dsi.jpg':{src:'https://m.media-amazon.com/images/I/71ohFpc8HzL._AC_SL1200_.jpg',alt:'Hosyond 7-inch touchscreen DSI connection guide for Raspberry Pi 5',caption:'Hosyond hardware reference for the Pi 5 and display-side DSI connection. Match the connector latch and cable orientation before applying power.',source:'Hosyond manual'},
   'smart-mirror/p6/s1-dry-fit.jpg':{src:'/assets/smart-mirror/p6/s1-dry-fit.jpg',alt:'Open 12 by 12 shadow box with mirror acrylic, Hosyond display, Pi case, and cables dry-fitted before adhesive',caption:'Dry-fit every layer first. Confirm cable reach, back-panel clearance, and display position before using Velcro.'},
-  'smart-mirror/p6/s2-iuniker-case.jpg':{src:'/assets/smart-mirror/p6/s2-iuniker-case.jpg',alt:'Raspberry Pi 5 being installed correctly in the iUniker passive aluminum case',caption:'Mount the Pi in the iUniker case without trapping the DSI ribbon. Confirm all ports line up before tightening screws.'},
+  'smart-mirror/p6/s2-iuniker-case.jpg':{src:'https://m.media-amazon.com/images/I/71T0l0LsiiL._AC_SL1500_.jpg',alt:'Raspberry Pi 5 seated in the iUniker passive aluminum cooling case with the top shell removed',caption:'Use this iUniker Pi 5 case reference to confirm board orientation and port alignment before closing the passive aluminum shell. Keep the DSI cable path clear.',source:'iUniker manual'},
   'smart-mirror/p6/s3-mirror-clean-layer.jpg':{src:'/assets/smart-mirror/p6/s3-mirror-clean-layer.jpg',alt:'Clean two-way acrylic mirror being lowered into the shadow-box front',caption:'Clean the acrylic immediately before placement so dust and fingerprints are not trapped inside the finished mirror.'},
   'smart-mirror/p6/s4-display-position.jpg':{src:'/assets/smart-mirror/p6/s4-display-position.jpg',alt:'Seven-inch touchscreen centered behind the 12 by 12 two-way mirror acrylic',caption:'Center the active display area behind the mirror before marking the final mounting position.'},
   'smart-mirror/p6/s5-display-velcro.jpg':{src:'/assets/smart-mirror/p6/s5-display-velcro.jpg',alt:'Heavy-duty Velcro applied only to safe display mounting edges',caption:'Place Velcro only on safe mounting surfaces. Keep adhesive away from electronics, vents, connectors, and the active screen.'},
@@ -29,7 +29,8 @@ function bind(){
     img.onload=()=>{
       const fig=document.createElement('figure');
       fig.className='sm6-photo sm6-manifest-photo';
-      fig.innerHTML=`<img src="${meta.src}" alt="${meta.alt.replace(/"/g,'&quot;')}"><figcaption>${meta.caption}</figcaption>`;
+      const source=meta.source?`<small class="sm6-photo-source">Reference source: ${meta.source}</small>`:'';
+      fig.innerHTML=`<img src="${meta.src}" alt="${meta.alt.replace(/"/g,'&quot;')}"><figcaption>${meta.caption}${source}</figcaption>`;
       card.replaceWith(fig);
     };
     img.onerror=()=>{
@@ -40,7 +41,7 @@ function bind(){
   });
 }
 const style=document.createElement('style');
-style.textContent=`.sm6-photo-awaiting{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;margin:16px 0;padding:15px;border:1px solid #3b4f66;border-radius:14px;background:#0a1420}.sm6-photo-awaiting-icon{font-size:26px;line-height:1}.sm6-photo-awaiting b{display:block;color:#eef4ff;margin-bottom:5px}.sm6-photo-awaiting p{margin:0 0 7px;color:#b6c3d4;line-height:1.5}.sm6-photo-awaiting small{color:#8293a8;line-height:1.45}.sm6-manifest-photo img{width:100%;height:auto;display:block}`;
+style.textContent=`.sm6-photo-awaiting{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;margin:16px 0;padding:15px;border:1px solid #3b4f66;border-radius:14px;background:#0a1420}.sm6-photo-awaiting-icon{font-size:26px;line-height:1}.sm6-photo-awaiting b{display:block;color:#eef4ff;margin-bottom:5px}.sm6-photo-awaiting p{margin:0 0 7px;color:#b6c3d4;line-height:1.5}.sm6-photo-awaiting small{color:#8293a8;line-height:1.45}.sm6-manifest-photo img{width:100%;height:auto;display:block}.sm6-photo-source{display:block;margin-top:6px;color:#78aee8!important;font-size:11px}`;
 document.head.appendChild(style);
 new MutationObserver(()=>requestAnimationFrame(bind)).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
 setTimeout(bind,350);

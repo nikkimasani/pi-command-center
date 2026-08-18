@@ -24,6 +24,10 @@
     {
       "source": "/smart-mirror-visual-manifest.js",
       "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
+    },
+    {
+      "source": "/smart-mirror-setup-coach.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     }
   ]
 }

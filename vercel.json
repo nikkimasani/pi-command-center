@@ -1,6 +1,5 @@
 {
-  "buildCommand": "node inject.mjs",
-  "outputDirectory": "dist",
+  "outputDirectory": ".",
   "headers": [
     {
       "source": "/",
@@ -12,6 +11,10 @@
     },
     {
       "source": "/sw.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
+    },
+    {
+      "source": "/smart-mirror-course-v5.js",
       "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     }
   ]

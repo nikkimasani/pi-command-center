@@ -1,10 +1,11 @@
-const CACHE_NAME = 'pi-command-v33';
+const CACHE_NAME = 'pi-command-v34';
 
 const STATIC_ASSETS = [
   '/', '/index.html', '/manifest.json', '/icon-192.svg', '/icon-512.svg', '/icon-maskable.svg',
   '/setup-course-v3.js', '/project-course-v6.js', '/project-visual-engine-v6.js', '/smart-mirror-course-v6.js', '/smart-mirror-v6-qa.js', '/smart-mirror-visual-manifest.js', '/smart-mirror-setup-coach.js', '/smart-mirror-visual-player.js',
   '/assets/boot-screen.jpg', '/assets/dsi-ribbon-reference.jpg', '/assets/pi5-port-map-reference.jpg', '/assets/setup/imager-ssh-generated.jpg', '/assets/smart-mirror-finished-reference.jpg',
-  '/assets/smart-mirror/dsi-find.jpg', '/assets/smart-mirror/dsi-align.jpg', '/assets/smart-mirror/dsi-seated.jpg', '/assets/smart-mirror/dsi-wrong.jpg', '/assets/smart-mirror/dsi-port-locate-generated.jpg', '/assets/smart-mirror/display-test.jpg', '/assets/smart-mirror/touch-test.jpg'
+  '/assets/smart-mirror/dsi-find.jpg', '/assets/smart-mirror/dsi-align.jpg', '/assets/smart-mirror/dsi-seated.jpg', '/assets/smart-mirror/dsi-wrong.jpg', '/assets/smart-mirror/dsi-port-locate-generated.jpg', '/assets/smart-mirror/display-test.jpg', '/assets/smart-mirror/touch-test.jpg',
+  '/assets/smart-mirror/p7/s3-closed-back.jpg', '/assets/smart-mirror/p8/s1-placement.jpg'
 ];
 const OFFLINE_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pi Command Center - Offline</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070b12;color:#f4f7fb;font:16px/1.5 Inter,system-ui,sans-serif;padding:24px}.card{max-width:420px;background:#0d131d;border:1px solid #243044;border-radius:20px;padding:24px;text-align:center}</style></head><body><div class="card"><h1>Offline</h1><p>Your saved Pi Command Center shell is available, but this screen needs a cached page or network connection.</p></div></body></html>`;
 const OLD=['/project-course-v3.js','/project-course-v4.js','/project-course-v5.js','/setup-course-v2.js','/course-quality-v5.js','/visual-registry-v6.js','/command-copy-v6.js','/hardware-accuracy-v7.js','/gpio-accuracy-v8.js','/gpio-lab-v9.js','/action-guide.js','/photo-nano.js','/photo-extra-small.js','/setup-actions.js','/beginner-mirror.js','/smart-mirror-photo-override.js','/beginner-detail-layer.js','/beginner-coach.js','/guided-projects-v2.js','/setup-wizard.js','/project-visual-fix-v4.js','/smart-mirror-course-v5.js','/smart-mirror-v5-guard.js'];

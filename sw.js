@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pi-command-v14';
+const CACHE_NAME = 'pi-command-v15';
 
 const STATIC_ASSETS = [
   '/',
@@ -8,7 +8,7 @@ const STATIC_ASSETS = [
   '/icon-512.svg',
   '/icon-maskable.svg',
   '/setup-wizard.js',
-  '/guided-projects-v2.js',
+  '/project-course-v3.js',
   '/assets/boot-screen.jpg',
   '/assets/dsi-ribbon-reference.jpg',
   '/assets/pi5-port-map-reference.jpg',
@@ -28,7 +28,7 @@ function enhanceHtml(response){
   const type=response.headers.get('content-type')||'';
   if(!type.includes('text/html'))return Promise.resolve(response);
   return response.text().then(html=>{
-    for(const src of ['/setup-wizard.js','/guided-projects-v2.js']){
+    for(const src of ['/setup-wizard.js','/project-course-v3.js']){
       const tag=`<script src="${src}"></script>`;
       if(!html.includes(tag))html=html.replace('</body>',`${tag}</body>`);
     }
@@ -40,4 +40,12 @@ function enhanceHtml(response){
 }
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(STATIC_ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=new URL(e.request.url);if(e.request.mode==='navigate'||url.pathname==='/'||url.pathname==='/index.html'){e.respondWith(fetch(e.request,{cache:'no-store'}).then(enhanceHtml).catch(()=>caches.match('/index.html').then(r=>r?enhanceHtml(r):new Response(OFFLINE_HTML,{headers:{'Content-Type':'text/html'}}))));return}e.respondWith(fetch(e.request).then(res=>{if(res.ok){const clone=res.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,clone))}return res}).catch(()=>caches.match(e.request))) });
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  const url=new URL(e.request.url);
+  if(e.request.mode==='navigate'||url.pathname==='/'||url.pathname==='/index.html'){
+    e.respondWith(fetch(e.request,{cache:'no-store'}).then(enhanceHtml).catch(()=>caches.match('/index.html').then(r=>r?enhanceHtml(r):new Response(OFFLINE_HTML,{headers:{'Content-Type':'text/html'}}))));
+    return;
+  }
+  e.respondWith(fetch(e.request).then(res=>{if(res.ok){const clone=res.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,clone))}return res}).catch(()=>caches.match(e.request)));
+});

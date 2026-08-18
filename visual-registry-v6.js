@@ -17,12 +17,14 @@ const EXACT={
 };
 function replaceFigure(root,item){
   let fig=q('.pc-photo',root);
+  if(fig?.dataset.vrKey===item.src)return;
   if(!fig){
     const target=q('.pc-target',root)||q('.pc-layout main > h1',root);
     if(!target)return;
     fig=document.createElement('figure');fig.className='pc-photo vr-exact';target.insertAdjacentElement('afterend',fig);
   }
   fig.classList.add('vr-exact');
+  fig.dataset.vrKey=item.src;
   fig.innerHTML=`<div class="pc-photo-head"><strong>${esc(item.title)}</strong><span class="vr-badge">EXACT ACTION PHOTO</span></div><img src="${item.src}" alt="${esc(item.title)}"><figcaption>${esc(item.caption)}</figcaption>`;
 }
 function projectVisual(){

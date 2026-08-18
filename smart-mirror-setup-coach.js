@@ -1,0 +1,30 @@
+(()=>{
+'use strict';
+const KEY='pi-sm6-setup-coach';
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch{}
+const persist=()=>localStorage.setItem(KEY,JSON.stringify(saved));
+const q=(s,r=document)=>r.querySelector(s);
+const qa=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const IMAGER=[
+  ['1','Device','Select Raspberry Pi 5.'],
+  ['2','OS','Choose Raspberry Pi OS (64-bit).'],
+  ['3','Storage','Select the SanDisk 128 GB microSD card.'],
+  ['4','Customisation','Set hostname, localisation, user, Wi-Fi and remote access.'],
+  ['5','Remote Access','Enable SSH and choose password authentication for this beginner setup.'],
+  ['6','Write','Review the selected storage device, then write and verify the card.']
+];
+const SSH=[
+  {k:'command',title:'1. Run the SSH command',body:'Paste the copied ssh command into Windows Terminal and press Enter once.',sample:'ssh YOUR_USERNAME@mirror.local'},
+  {k:'fingerprint',title:'2. First-connection fingerprint',body:'If Terminal asks whether you want to continue connecting, type yes and press Enter. This is expected the first time.',sample:'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes'},
+  {k:'password',title:'3. Enter the Pi password',body:'Type the password you created in Imager. Nothing appears while you type, not even dots. Press Enter when finished.',sample:"YOUR_USERNAME@mirror.local's password:"},
+  {k:'prompt',title:'4. Confirm you are connected',body:'You are done when the prompt changes from your Windows prompt to the Raspberry Pi shell prompt.',sample:'YOUR_USERNAME@mirror:~ $'}
+];
+function checkboxRow(scope,i,title,text){const k=`${scope}:${i}`;return `<label class="sm6-coach-check"><input type="checkbox" data-coach-check="${esc(k)}" ${saved[k]?'checked':''}><span><b>${esc(title)}</b><small>${esc(text)}</small></span></label>`}
+function imagerCard(){return `<section class="sm6-card sm6-coach" data-coach-kind="imager"><div class="sm6-coach-title"><div><small>INTERACTIVE SETUP COACH</small><h2>Follow the current Imager flow</h2></div><a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener">Official download ↗</a></div><p class="sm6-muted">Recent Raspberry Pi Imager versions use a guided flow. Complete these in order and tick each one here before you write the card.</p>${IMAGER.map((x,i)=>checkboxRow('imager',i,x[1],x[2])).join('')}</section>`}
+function sshCard(){const active=saved.sshActive||'command';const tab=SSH.find(x=>x.k===active)||SSH[0];return `<section class="sm6-card sm6-coach" data-coach-kind="ssh"><div class="sm6-coach-title"><div><small>INTERACTIVE SSH COACH</small><h2>Know exactly what Terminal should do</h2></div><a href="https://www.raspberrypi.com/documentation/computers/remote-access.html" target="_blank" rel="noopener">SSH help ↗</a></div><div class="sm6-coach-tabs">${SSH.map(x=>`<button type="button" data-ssh-tab="${x.k}" class="${x.k===active?'active':''}">${x.title.split('.')[0]}</button>`).join('')}</div><div class="sm6-coach-panel"><h3>${esc(tab.title)}</h3><p>${esc(tab.body)}</p><pre>${esc(tab.sample)}</pre></div>${SSH.map((x,i)=>checkboxRow('ssh',i,x.title,x.k==='password'?'I understand that the password remains invisible while I type.':'I reached or understood this state.')).join('')}</section>`}
+function insertAfterWhy(article,html,marker){if(q(`[data-coach-kind="${marker}"]`,article))return;const why=q('.sm6-why',article);if(!why)return;why.insertAdjacentHTML('afterend',html)}
+function enhance(){if(!document.body.classList.contains('sm6-active'))return;const article=q('#sm6Root .sm6-step');if(!article)return;const title=(q('h1',article)?.textContent||'').toLowerCase();if(title.includes('download and open raspberry pi imager')||title.includes('configure hostname')||title.includes('select the sandisk'))insertAfterWhy(article,imagerCard(),'imager');if(title.includes('connect with ssh'))insertAfterWhy(article,sshCard(),'ssh');qa('[data-coach-check]',article).forEach(input=>{input.onchange=()=>{saved[input.dataset.coachCheck]=input.checked;persist()}});qa('[data-ssh-tab]',article).forEach(btn=>{btn.onclick=()=>{saved.sshActive=btn.dataset.sshTab;persist();const old=q('[data-coach-kind="ssh"]',article);if(old){old.outerHTML=sshCard();enhance()}}})}
+const style=document.createElement('style');style.textContent=`.sm6-coach{border-color:#405b78!important;background:linear-gradient(180deg,#0b1724,#09131f)!important}.sm6-coach-title{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.sm6-coach-title small{color:#74b8ff;font-weight:900;letter-spacing:.09em}.sm6-coach-title h2{margin:4px 0 0!important}.sm6-coach-title a{font-size:12px;white-space:nowrap}.sm6-coach-check{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #17283a}.sm6-coach-check input{width:20px;height:20px;accent-color:#7c4dff;margin-top:2px}.sm6-coach-check span,.sm6-coach-check small{display:block}.sm6-coach-check small{margin-top:3px;color:#95a8bf;line-height:1.45}.sm6-coach-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0}.sm6-coach-tabs button{padding:9px;border:1px solid #334b65;border-radius:8px;background:#0d1a28;color:#aebed0;font-weight:800}.sm6-coach-tabs button.active{background:#33206e;border-color:#7254d8;color:#fff}.sm6-coach-panel{padding:13px;border:1px solid #32485f;border-radius:11px;background:#050b12}.sm6-coach-panel h3{margin:0 0 7px}.sm6-coach-panel p{color:#b8c5d5;line-height:1.5}.sm6-coach-panel pre{margin-top:10px;white-space:pre-wrap;word-break:break-word;color:#9ff0c9}@media(max-width:560px){.sm6-coach-title{display:block}.sm6-coach-title a{display:inline-block;margin-top:8px}.sm6-coach-tabs{grid-template-columns:repeat(2,1fr)}}`;document.head.appendChild(style);
+new MutationObserver(()=>requestAnimationFrame(enhance)).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});setTimeout(enhance,450);
+})();

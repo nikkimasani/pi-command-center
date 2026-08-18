@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pi-command-v18';
+const CACHE_NAME = 'pi-command-v19';
 
 const STATIC_ASSETS = [
   '/',
@@ -11,6 +11,7 @@ const STATIC_ASSETS = [
   '/project-course-v3.js',
   '/course-quality-v5.js',
   '/visual-registry-v6.js',
+  '/command-copy-v6.js',
   '/assets/boot-screen.jpg',
   '/assets/dsi-ribbon-reference.jpg',
   '/assets/pi5-port-map-reference.jpg',
@@ -32,7 +33,7 @@ function enhanceHtml(response){
   const type=response.headers.get('content-type')||'';
   if(!type.includes('text/html'))return Promise.resolve(response);
   return response.text().then(html=>{
-    for(const src of ['/setup-course-v2.js','/project-course-v3.js','/course-quality-v5.js','/visual-registry-v6.js']){
+    for(const src of ['/setup-course-v2.js','/project-course-v3.js','/course-quality-v5.js','/visual-registry-v6.js','/command-copy-v6.js']){
       const tag=`<script src="${src}"></script>`;
       if(!html.includes(tag))html=html.replace('</body>',`${tag}</body>`);
     }

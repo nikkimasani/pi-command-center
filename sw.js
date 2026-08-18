@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pi-command-v1';
+const CACHE_NAME = 'pi-command-v2';
 
 const STATIC_ASSETS = [
   '/',
@@ -6,7 +6,8 @@ const STATIC_ASSETS = [
   '/manifest.json',
   '/icon-192.svg',
   '/icon-512.svg',
-  '/icon-maskable.svg'
+  '/icon-maskable.svg',
+  '/photo-nano.js'
 ];
 
 const OFFLINE_HTML = `<!doctype html>
@@ -24,6 +25,19 @@ const OFFLINE_HTML = `<!doctype html>
 </head>
 <body><div class="card"><h1>Offline</h1><p>Pi Command Center needs a network connection. Please reconnect and refresh.</p></div></body>
 </html>`;
+
+function enhanceHtml(response){
+  if(!response || !response.ok) return Promise.resolve(response);
+  const type=response.headers.get('content-type')||'';
+  if(!type.includes('text/html')) return Promise.resolve(response);
+  return response.text().then(html=>{
+    if(!html.includes('/photo-nano.js')) html=html.replace('</body>','<script src="/photo-nano.js"></script></body>');
+    const headers=new Headers(response.headers);
+    headers.set('content-type','text/html; charset=utf-8');
+    headers.set('cache-control','no-store, max-age=0');
+    return new Response(html,{status:response.status,statusText:response.statusText,headers});
+  });
+}
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -43,16 +57,19 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const url=new URL(e.request.url);
+  if(e.request.mode==='navigate' || url.pathname==='/' || url.pathname==='/index.html'){
+    e.respondWith(
+      fetch(e.request,{cache:'no-store'})
+        .then(enhanceHtml)
+        .catch(()=>caches.match('/index.html').then(r=>r?enhanceHtml(r):new Response(OFFLINE_HTML,{headers:{'Content-Type':'text/html'}})))
+    );
+    return;
+  }
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      const fetched = fetch(e.request).then(res => {
-        if (res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-        }
-        return res;
-      }).catch(() => cached || new Response(OFFLINE_HTML, { headers: { 'Content-Type': 'text/html' } }));
-      return cached || fetched;
-    })
+    fetch(e.request).then(res=>{
+      if(res.ok){const clone=res.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,clone));}
+      return res;
+    }).catch(()=>caches.match(e.request))
   );
 });

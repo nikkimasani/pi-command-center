@@ -5,7 +5,7 @@
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/project-course-v6.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/project-visual-engine-v6.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/project-visual-engine-v7.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/smart-mirror-course-v6.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/smart-mirror-v6-qa.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/smart-mirror-visual-manifest.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},

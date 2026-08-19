@@ -1,0 +1,3 @@
+Smart Mirror V11 production release
+Branch QA completed before promotion.
+Includes V10 clean renderer, V11 build map and checkpoints, official Raspberry Pi OS Desktop user-systemd autostart guidance, V41 service worker, and no-store release headers.

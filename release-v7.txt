@@ -1,0 +1,8 @@
+Production UI V7 recovery release
+- consolidated course stack
+- mobile overflow and clipping fixes
+- resilient hamburger/sidebar handling
+- Setup V3 route enforcement
+- modern project renderer remount recovery
+- image error fallbacks
+- service worker pi-command-v37

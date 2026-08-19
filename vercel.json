@@ -1,14 +1,9 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {"deploymentEnabled": true},
-  "buildCommand": "node inject.mjs",
-  "outputDirectory": "dist",
+  "outputDirectory": ".",
   "headers": [
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v14-visual-system.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v15-repair.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/assets/projects/smart-mirror/v15/step-01-parts.jpg","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
+    {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
   ]
 }

@@ -935,6 +935,79 @@
       display: block;
     }
 
+    .step-hero.has-photo {
+      display: block;
+      padding: 0;
+      min-height: 0;
+    }
+
+    /* Photo Viewer (real hardware/screen references) */
+    .photo-viewer {
+      width: 100%;
+    }
+
+    .photo-viewer-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 12px 12px 0;
+    }
+
+    .photo-viewer-tabs button {
+      border: 1px solid var(--line);
+      background: var(--panel2);
+      color: var(--muted);
+      padding: 7px 10px;
+      border-radius: var(--radius-xs);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .photo-viewer-tabs button.active {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #fff;
+    }
+
+    .photo-viewer-stage {
+      margin-top: 10px;
+      background: #05080d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 180px;
+    }
+
+    .photo-viewer-stage img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .photo-viewer-caption {
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      border-top: 1px solid var(--line);
+    }
+
+    .photo-viewer-caption b {
+      color: var(--text);
+      display: block;
+      margin-bottom: 3px;
+      font-size: 12.5px;
+    }
+
+    .setup-step-photo {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--panel);
+    }
+
     /* Step Thumbnails */
     .step-thumbnails {
       display: flex;
@@ -2750,23 +2823,39 @@
   </nav>
 
 <script>
-const S=(title,summary,actions,success,warning,visual)=>({title,summary,actions,success,warning,visual});
+const S=(title,summary,actions,success,warning,visual,photos)=>({title,summary,actions,success,warning,visual,photos});
 const P=(id,title,icon,difficulty,time,category,summary,materials,steps)=>({id,title,icon,difficulty,time,category,summary,materials,steps});
+const F=(text,photos)=>({text,photos});
 window.PI_FOUNDATION=[
-'Flash Raspberry Pi OS 64-bit Desktop to the 128 GB SanDisk microSD card with Raspberry Pi Imager.',
-'In Raspberry Pi Imager settings, enable SSH, enter your Wi-Fi credentials, set hostname to nikkipi, and choose America/Chicago.',
-'Install the Raspberry Pi 5 in the Pi 5 metal case. Use the 45W USB-C power supply for the Pi 5.',
-'Boot once with HDMI if needed. Finish Raspberry Pi OS setup, then run sudo apt update && sudo apt full-upgrade -y.',
-'Power the Pi completely off before connecting or disconnecting any DSI ribbon cable.',
-'Connect one 7-inch display, boot again, then test display, touch, Wi-Fi, SSH, and temperature before mounting anything permanently.'
+F('Flash Raspberry Pi OS 64-bit Desktop to the 128 GB SanDisk microSD card with Raspberry Pi Imager.',[
+  {label:'microSD card',src:'/assets/projects/smart-mirror/v15/step-01-parts.jpg',caption:'The SanDisk 128 GB microSD card you will flash and insert into the Pi 5.'}
+]),
+F('In Raspberry Pi Imager settings, enable SSH, enter your Wi-Fi credentials, set hostname to nikkipi, and choose America/Chicago.',[
+  {label:'Imager settings',src:'/assets/setup/imager-ssh-generated.jpg',caption:'Match this screen: SSH enabled, password authentication selected, a username set, and Wi-Fi/locale filled in before you write the card.'}
+]),
+F('Install the Raspberry Pi 5 in the Pi 5 metal case. Use the 45W USB-C power supply for the Pi 5.'),
+F('Boot once with HDMI if needed. Finish Raspberry Pi OS setup, then run sudo apt update && sudo apt full-upgrade -y.',[
+  {label:'First boot',src:'/assets/boot-screen.jpg',caption:'The Raspberry Pi OS boot sequence you should see before the desktop loads.'}
+]),
+F('Power the Pi completely off before connecting or disconnecting any DSI ribbon cable.'),
+F('Connect one 7-inch display, boot again, then test display, touch, Wi-Fi, SSH, and temperature before mounting anything permanently.')
 ];
 window.PI_PROJECTS=[
 P('smart-mirror','Smart Mirror','🪞','Medium','6–8 hours','Display','Build a real two-way smart mirror in the 12 × 12 shadow box with the Pi 5 and 7-inch display.',['Raspberry Pi 5 4GB','iUniker Pi 5 metal case','7-inch DSI touchscreen','Pi 5 DSI FPC cable','12 × 12 shadow box','Two-way acrylic mirror sheet','45W USB-C power supply','128 GB microSD','Heavy-duty Velcro','Black foam board or matte black tape','Precision screwdriver set'],[
-S('Test the mirror effect before mounting','Confirm your particular mirror acrylic and display are bright enough together before you cut, tape, or mount anything.',['Place the powered-off 7-inch display flat on a soft, clean towel so the screen cannot scratch.','Power the display and Pi on while everything is still loose on your desk.','Open a mostly black test page with very large white text, a white clock, and one bright icon.','Hold one two-way mirror sheet directly in front of the screen without removing protective film if the film is transparent enough to test.','Look at the mirror from straight on, then from your normal standing angle. Test once with room lights on and once with lights dimmed.','Increase display brightness only as much as needed. Note the brightness level that gives the best balance between mirror reflection and readable text.'],'You can clearly read white text through the mirror while black areas mostly disappear into the reflection.','Do not cut the acrylic or permanently mount the display until this test passes.',['Two-way mirror','7-inch display','White text visible','Black background hidden']),
-S('Dry-fit every layer in the shadow box','Make sure the mirror, display, Pi, and cable paths physically fit before adding adhesive.',['Open the shadow box and remove its rear panel and any decorative insert.','Place the two-way mirror sheet at the very front where the original glass would sit.','Position the display centered behind the mirror. Keep the LCD face parallel to the mirror.','Place the Pi 5 metal case behind or beside the display where it will not press against the LCD.','Hold the back panel in position without closing it. Confirm there is room for the DSI ribbon, USB-C power lead, and airflow.','Mark the display center and Pi position lightly with painter tape so you can reproduce the layout.'],'The back panel can close without pushing on the display, Pi, or cables.','Pressure on the LCD can cause bright spots, cracking, or touch problems. Nothing should squeeze the screen.',['Front of frame','Mirror acrylic','Display','Pi 5','Back panel']),
+S('Test the mirror effect before mounting','Confirm your particular mirror acrylic and display are bright enough together before you cut, tape, or mount anything.',['Place the powered-off 7-inch display flat on a soft, clean towel so the screen cannot scratch.','Power the display and Pi on while everything is still loose on your desk.','Open a mostly black test page with very large white text, a white clock, and one bright icon.','Hold one two-way mirror sheet directly in front of the screen without removing protective film if the film is transparent enough to test.','Look at the mirror from straight on, then from your normal standing angle. Test once with room lights on and once with lights dimmed.','Increase display brightness only as much as needed. Note the brightness level that gives the best balance between mirror reflection and readable text.'],'You can clearly read white text through the mirror while black areas mostly disappear into the reflection.','Do not cut the acrylic or permanently mount the display until this test passes.',['Two-way mirror','7-inch display','White text visible','Black background hidden'],[
+  {label:'Mirror reflection',src:'/assets/smart-mirror-finished-reference.jpg',caption:'What the finished mirror effect should look like once brightness and the two-way acrylic are dialed in.'}
+]),
+S('Dry-fit every layer in the shadow box','Make sure the mirror, display, Pi, and cable paths physically fit before adding adhesive.',['Open the shadow box and remove its rear panel and any decorative insert.','Place the two-way mirror sheet at the very front where the original glass would sit.','Position the display centered behind the mirror. Keep the LCD face parallel to the mirror.','Place the Pi 5 metal case behind or beside the display where it will not press against the LCD.','Hold the back panel in position without closing it. Confirm there is room for the DSI ribbon, USB-C power lead, and airflow.','Mark the display center and Pi position lightly with painter tape so you can reproduce the layout.'],'The back panel can close without pushing on the display, Pi, or cables.','Pressure on the LCD can cause bright spots, cracking, or touch problems. Nothing should squeeze the screen.',['Front of frame','Mirror acrylic','Display','Pi 5','Back panel'],[
+  {label:'Pi 5 port map',src:'/assets/pi5-port-map-reference.jpg',caption:'Dry-fit the Pi so USB-C power, DSI, and ventilation stay reachable once the back panel is in place.'},
+  {label:'Finished layout target',src:'/assets/smart-mirror-finished-reference.jpg',caption:'The layout you are dry-fitting toward: display centered behind the mirror, Pi tucked behind it.'}
+]),
 S('Mount the display with removable fasteners','Secure the screen while keeping the first installation reversible.',['Power the Pi off and disconnect the USB-C power cable.','Clean only the rigid mounting surfaces where Velcro will attach. Do not put adhesive on the visible display area.','Apply short Velcro strips to the display frame or a rigid backing plate, not over electronics or ribbon connectors.','Attach matching Velcro inside the shadow box using your center marks.','Press the display into place gently and check it from the front.','Correct any tilt now. The visible screen area should be level and centered behind the mirror.'],'The display does not move when the shadow box is gently tilted, and it appears level from the front.','Keep Velcro and adhesive away from the DSI connector, vents, exposed components, and touchscreen flex cables.',['Shadow box back','Velcro strips','Display centered','No pressure on LCD']),
 S('Black out everything around the screen','Stop the Pi, cables, and inside of the shadow box from showing through the mirror.',['With the display still off, look through the front mirror under bright room light and identify any light-colored or shiny areas behind it.','Cut black foam board to surround the active display area without covering the visible pixels.','Use matte black tape on small shiny surfaces that cannot be hidden by foam board.','Keep the Pi metal case and ventilation openings uncovered.','Turn the display on with a black background and inspect the mirror again.','Adjust the blackout mask until the only obvious illuminated area is the screen content itself.'],'The mirror looks like a normal dark mirror when the screen background is black.','Do not wrap the Pi in foam or tape. The Pi 5 needs a path for heat to escape.',['Mirror view','Black mask','Visible screen only','Ventilation left open']),
-S('Route the DSI and power cables safely','Create gentle cable paths that do not pinch when the back closes.',['Power the Pi completely off before touching the DSI cable.','Connect the Pi 5-compatible DSI cable firmly and squarely at both ends. Lock the connector tabs if your display uses locking tabs.','Route the DSI ribbon in a broad curve. Use a bend radius of roughly a finger width or larger rather than a sharp fold.','Route the USB-C power cable on a different path so it cannot press the ribbon against the frame.','Use small pieces of tape or loose cable clips as strain relief. Do not tape across hot surfaces.','Hold the back panel in place and inspect every cable edge before fastening the panel.'],'The back closes without pinching, sharply bending, or pulling on either cable.','A creased DSI ribbon can create intermittent display failures. Never fold it tightly like paper.',['Pi 5 DSI port','Wide ribbon curve','Display DSI port','USB-C exit path']),
+S('Route the DSI and power cables safely','Create gentle cable paths that do not pinch when the back closes.',['Power the Pi completely off before touching the DSI cable.','Connect the Pi 5-compatible DSI cable firmly and squarely at both ends. Lock the connector tabs if your display uses locking tabs.','Route the DSI ribbon in a broad curve. Use a bend radius of roughly a finger width or larger rather than a sharp fold.','Route the USB-C power cable on a different path so it cannot press the ribbon against the frame.','Use small pieces of tape or loose cable clips as strain relief. Do not tape across hot surfaces.','Hold the back panel in place and inspect every cable edge before fastening the panel.'],'The back closes without pinching, sharply bending, or pulling on either cable.','A creased DSI ribbon can create intermittent display failures. Never fold it tightly like paper.',['Pi 5 DSI port','Wide ribbon curve','Display DSI port','USB-C exit path'],[
+  {label:'Align the ribbon',src:'/assets/smart-mirror/dsi-align.jpg',caption:'Gold contacts face the GPIO pins and the blue stiffener faces up. Match this orientation at both ends.'},
+  {label:'Correct — fully seated',src:'/assets/smart-mirror/dsi-seated.jpg',caption:'Fully inserted to the line and even on both sides. This is what a correctly seated ribbon looks like.'},
+  {label:'Closed back reference',src:'/assets/smart-mirror/p7/s3-closed-back.jpg',caption:'The back panel should sit flat like this, with the power cable exiting cleanly and nothing pinched at the edges.'}
+]),
 S('Configure mirror kiosk mode','Make the Pi boot directly into a clean black-background mirror screen.',['Boot Raspberry Pi OS and confirm touch and Wi-Fi still work after mounting.','Open Chromium and load the production dashboard or mirror page.','Use a mirror layout with a pure black background, white primary text, and only a few high-value widgets.','Test full-screen kiosk mode manually first. On Raspberry Pi OS, use Chromium with --kiosk and your production URL.','After the command works manually, add it to your desktop autostart configuration so Chromium launches after login.','Reboot twice to confirm the Pi reaches the mirror screen without keyboard input.'],'A cold boot ends on the full-screen mirror dashboard automatically.','Do not put API keys, private tokens, or passwords in browser-visible JavaScript.',['Power on','Raspberry Pi OS','Chromium kiosk','Mirror dashboard']),
 S('Run a thermal and stability test','Verify the finished enclosure can run safely before you permanently close it.',['Leave the back panel open for the first test.','Run the mirror dashboard continuously for at least 30 minutes.','Check CPU temperature with vcgencmd measure_temp or your device-status screen.','Touch the outside of the metal Pi case carefully. Warm is expected, but the system should remain stable without throttling or shutdowns.','Watch for display flicker, touch failures, Wi-Fi drops, or power warnings.','If stable, close the back and repeat a shorter 15-minute test. Add ventilation openings if temperature rises excessively.'],'The display stays stable, the Pi does not show undervoltage warnings, and temperature remains reasonable in the closed box.','Solve heat or power problems before leaving the mirror running unattended for long periods.',['30 min test','Temperature check','No flicker','Close back','Retest'])
 ]),
@@ -2881,6 +2970,27 @@ function svgDetailed(labels,icon){
   const lines=s.slice(0,-1).map((_,i)=>{const x1=220+i*150,y1=i%2?247:172,x2=90+(i+1)*150,y2=(i+1)%2?247:172;return `<path d="M${x1} ${y1} C ${x1+35} ${y1},${x2-35} ${y2},${x2} ${y2}" fill="none" stroke="#6576ff" stroke-width="3" marker-end="url(#${uid})"/>`;}).join('');
   return `<svg viewBox="0 0 860 360" role="img"><defs><marker id="${uid}" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#6576ff"/></marker></defs><rect width="860" height="360" rx="18" fill="#080d15"/><circle cx="430" cy="180" r="190" fill="#6d5dfc" opacity=".08"/><text x="34" y="48" font-size="34">${icon}</text><text x="82" y="44" fill="#8fa0b5" font-size="12" letter-spacing="2">STEP VISUAL</text>${lines}${boxes}</svg>`;
 }
+// Real photo viewer (used when a step has authored photo references)
+function renderPhotoViewer(photos){
+  const first=photos[0];
+  return `<div class="photo-viewer" data-active="0">
+    ${photos.length>1?`<div class="photo-viewer-tabs">${photos.map((ph,i)=>`<button type="button" data-photo-tab="${i}" class="${i===0?'active':''}">${esc(ph.label)}</button>`).join('')}</div>`:''}
+    <div class="photo-viewer-stage"><img src="${esc(first.src)}" alt="${esc(first.label)}" loading="eager"></div>
+    <div class="photo-viewer-caption"><b>${esc(first.label)}</b><span data-photo-caption>${esc(first.caption)}</span></div>
+  </div>`;
+}
+function bindPhotoViewer(container,photos){
+  const viewer=qs('.photo-viewer',container); if(!viewer) return;
+  const img=qs('.photo-viewer-stage img',viewer), cap=qs('[data-photo-caption]',viewer), title=qs('.photo-viewer-caption b',viewer);
+  qsa('[data-photo-tab]',viewer).forEach(b=>b.onclick=()=>{
+    const i=Number(b.dataset.photoTab), ph=photos[i];
+    viewer.dataset.active=i;
+    qsa('[data-photo-tab]',viewer).forEach(x=>x.classList.toggle('active',x===b));
+    if(img){img.src=ph.src;img.alt=ph.label;}
+    if(title) title.textContent=ph.label;
+    if(cap) cap.textContent=ph.caption;
+  });
+}
 function svgHardware(){
   return `<svg viewBox="0 0 800 200" role="img"><rect width="800" height="200" rx="14" fill="#0a1018"/><rect x="30" y="30" width="160" height="140" rx="10" fill="#111a29" stroke="#34445f" stroke-width="2"/><text x="110" y="80" fill="#fff" font-size="11" text-anchor="middle" font-weight="700">GPIO 40-pin</text><text x="110" y="100" fill="#8999b0" font-size="9" text-anchor="middle">Header</text><rect x="220" y="30" width="120" height="140" rx="10" fill="#111a29" stroke="#34445f" stroke-width="2"/><text x="280" y="80" fill="#fff" font-size="11" text-anchor="middle" font-weight="700">USB 3.0</text><text x="280" y="100" fill="#8999b0" font-size="9" text-anchor="middle">×2 ports</text><rect x="370" y="30" width="120" height="140" rx="10" fill="#111a29" stroke="#34445f" stroke-width="2"/><text x="430" y="80" fill="#fff" font-size="11" text-anchor="middle" font-weight="700">USB-C</text><text x="430" y="100" fill="#8999b0" font-size="9" text-anchor="middle">Power</text><rect x="520" y="30" width="120" height="140" rx="10" fill="#111a29" stroke="#34445f" stroke-width="2"/><text x="580" y="80" fill="#fff" font-size="11" text-anchor="middle" font-weight="700">HDMI</text><text x="580" y="100" fill="#8999b0" font-size="9" text-anchor="middle">×2 micro</text><rect x="670" y="30" width="100" height="140" rx="10" fill="#111a29" stroke="#34445f" stroke-width="2"/><text x="720" y="80" fill="#fff" font-size="11" text-anchor="middle" font-weight="700">microSD</text><text x="720" y="100" fill="#8999b0" font-size="9" text-anchor="middle">Slot</text></svg>`;
 }
@@ -2956,7 +3066,19 @@ function renderSetup(){
   const el=qs('#setupView'); if(!el)return;
   el.innerHTML=`<div class="breadcrumb"><button class="text-link" onclick="renderHome()">Home</button> / Setup Guide</div>
     <div class="panel-page"><span class="eyebrow">Start here</span><h1>Shared Raspberry Pi Setup</h1><p>Complete this before you mount, glue, cut, or wire anything.</p>
-    <div class="setup-steps">${foundation.map((s,i)=>`<div class="setup-step"><div class="step-num">${i+1}</div><div><strong>Step ${i+1}</strong><p>${esc(s)}</p></div></div>`).join('')}</div></div>`;
+    <div class="setup-steps">${foundation.map((s,i)=>{
+      const text=typeof s==='string'?s:s.text;
+      const photos=typeof s==='object'&&s.photos;
+      return `<div class="setup-step"><div class="step-num">${i+1}</div><div><strong>Step ${i+1}</strong><p>${esc(text)}</p>${photos&&photos.length?`<div class="setup-step-photo" data-setup-photo="${i}"></div>`:''}</div></div>`;
+    }).join('')}</div></div>`;
+  foundation.forEach((s,i)=>{
+    const photos=typeof s==='object'&&s.photos;
+    if(!photos||!photos.length)return;
+    const host=qs(`[data-setup-photo="${i}"]`);
+    if(!host)return;
+    host.innerHTML=renderPhotoViewer(photos);
+    bindPhotoViewer(host,photos);
+  });
 }
 
 // ===== INVENTORY =====
@@ -3000,7 +3122,16 @@ function renderStep(){
 
   // Hero
   const hero=qs('.step-hero');
-  if(hero) hero.innerHTML=svgDetailed(s.visual||[s.title],p.icon);
+  if(hero){
+    if(s.photos&&s.photos.length){
+      hero.classList.add('has-photo');
+      hero.innerHTML=renderPhotoViewer(s.photos);
+      bindPhotoViewer(hero,s.photos);
+    }else{
+      hero.classList.remove('has-photo');
+      hero.innerHTML=svgDetailed(s.visual||[s.title],p.icon);
+    }
+  }
 
   // Thumbnails
   const thumbs=qs('.step-thumbnails');

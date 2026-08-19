@@ -16,6 +16,7 @@
     {"source":"/smart-mirror-v11-qa.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/smart-mirror-v11-corrections.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/smart-mirror-v12-mobile-fix.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v13-concept.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
+    {"source":"/smart-mirror-v13-concept.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/smart-mirror-v14-visual-system.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
   ]
 }

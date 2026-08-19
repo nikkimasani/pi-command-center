@@ -1,5 +1,6 @@
 {
-  "outputDirectory": ".",
+  "buildCommand": "node inject.mjs",
+  "outputDirectory": "dist",
   "headers": [
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},

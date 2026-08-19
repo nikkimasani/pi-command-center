@@ -1,8 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "git": {
-    "deploymentEnabled": true
-  },
+  "git": {"deploymentEnabled": true},
   "buildCommand": "node inject.mjs",
   "outputDirectory": "dist",
   "headers": [
@@ -13,11 +11,7 @@
     {"source":"/project-course-v6.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/project-visual-manifest-v9.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/project-visual-engine-v8.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-course-v6.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-visual-manifest.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-setup-coach.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-visual-player.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-visual-rescue-v7.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/production-ui-v7.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
+    {"source":"/production-ui-v7.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/smart-mirror-v10.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
   ]
 }

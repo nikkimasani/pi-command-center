@@ -7,16 +7,8 @@
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/setup-course-v4.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/project-course-v6.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/project-visual-manifest-v9.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/project-visual-engine-v8.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/production-ui-v7.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v10.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v11-qa.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v11-corrections.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v12-mobile-fix.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v13-concept.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v14-visual-system.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
+    {"source":"/smart-mirror-v14-visual-system.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/smart-mirror-v15-repair.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/assets/projects/smart-mirror/v15/step-01-parts.jpg","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
   ]
 }

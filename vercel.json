@@ -12,6 +12,8 @@
     {"source":"/project-visual-manifest-v9.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/project-visual-engine-v8.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/production-ui-v7.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v10.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
+    {"source":"/smart-mirror-v10.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/smart-mirror-v11-qa.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/smart-mirror-v11-corrections.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
   ]
 }

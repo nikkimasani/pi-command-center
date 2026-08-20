@@ -11,8 +11,10 @@ const requireFile=(p,min=1)=>{
 const html=requireFile('index.html',50000);
 const js=requireFile('smart-mirror-v17.js',20000);
 
-if(!html.includes('/smart-mirror-v17.js?v=17.0'))fail.push('built index is missing V17 entry script');
+if(!html.includes('/smart-mirror-v17.js?v=17.1'))fail.push('built index is missing V17.1 entry script');
 if(/smart-mirror-v1(?:0|1|2|3|4|5|6)[^"']*\.js/i.test(html))fail.push('built index still contains a legacy Smart Mirror enhancement script');
+if(html.includes('🍓'))fail.push('built production shell still contains the strawberry placeholder');
+if(!html.includes('href="/icon-192.svg"'))fail.push('production favicon was not replaced with the app icon');
 if(!js.includes('SMART_MIRROR_STEP_COUNT = 16'))fail.push('V17 does not declare the required 16-step course');
 
 const manifestStart=js.indexOf('const VISUAL_MANIFEST');
@@ -34,8 +36,8 @@ if(!js.includes('Raspberry Pi OS'))fail.push('Step 2 Raspberry Pi OS visual is m
 if(!js.includes('DSI ribbon: unlock'))fail.push('DSI instructional diagram is missing');
 
 if(fail.length){
-  console.error('\nSmart Mirror V17 validation FAILED');
+  console.error('\nSmart Mirror V17.1 validation FAILED');
   fail.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Smart Mirror V17 validation passed: 16 steps, 16 deterministic visuals, no legacy scripts, no strawberry placeholder, no sprite dependency.');
+console.log('Smart Mirror V17.1 validation passed: 16 deterministic visuals, no legacy scripts, no strawberry placeholder, no sprite dependency.');

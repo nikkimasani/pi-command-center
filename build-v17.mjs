@@ -8,6 +8,7 @@ html=html.replace(/\n?<script\s+src="\/smart-mirror-v(?:10|11[^"']*|12[^"']*|13[
 html=html.replace(/\n?<script\s+src="\/smart-mirror-v16-hires\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
 html=html.replace(/\n?<script\s+src="\/smart-mirror-v16-sprite\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
 html=html.replace(/\n?<script\s+src="\/smart-mirror-v17\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
+html=html.replace(/\n?<script\s+src="\/responsive-v1\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
 html=html.replace(/\n?<script>queueMicrotask\(.*?window\.renderHome\(\).*?<\/script>/gis,'');
 
 // The source favicon is an inline SVG data URI containing raw > characters.
@@ -21,9 +22,10 @@ html=html.replace(/<span class="emoji">[\s\S]*?<\/span>/i,'<span class="emoji"><
 // Remove any remaining legacy strawberry text token from built markup/data.
 html=html.replaceAll('🍓','◉');
 
+const responsive='<script src="/responsive-v1.js?v=1.0"></script>';
 const v17='<script src="/smart-mirror-v17.js?v=17.2"></script>';
 const rerender='<script>queueMicrotask(()=>{if(window.renderHome&&document.querySelector("#homeView.active"))window.renderHome();});</script>';
-html=html.replace('</body>',`${v17}\n${rerender}\n</body>`);
+html=html.replace('</body>',`${responsive}\n${v17}\n${rerender}\n</body>`);
 
 fs.writeFileSync(path,html);
-console.log('Smart Mirror V17.2 shell built: one renderer, clean raspberry branding, first-load 16-step home metadata');
+console.log('Pi Command Center responsive V1 + Smart Mirror V17.2 shell built');

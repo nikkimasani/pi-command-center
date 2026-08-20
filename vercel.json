@@ -8,6 +8,7 @@
     {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/smart-mirror-v17.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/shared-setup-v2.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/project-courses-v1.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/assets/setup/v2/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=31536000, immutable"}]}
   ]
 }

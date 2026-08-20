@@ -5,6 +5,8 @@
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v16-hires.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
+    {"source":"/smart-mirror-v16-hires.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/smart-mirror-v16-sprite.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/assets/projects/smart-mirror/v16/visual-sprite.b64","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
   ]
 }

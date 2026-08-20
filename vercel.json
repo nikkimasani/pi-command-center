@@ -1,11 +1,13 @@
 {
   "git": {"deploymentEnabled": true},
-  "buildCommand": "node seed-setup-v2-assets.mjs && node build-v17.mjs && node validate-smart-mirror-v17.mjs",
+  "buildCommand": "node build-v17.mjs && node validate-smart-mirror-v17.mjs",
   "outputDirectory": ".",
   "headers": [
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v17.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
+    {"source":"/smart-mirror-v17.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/shared-setup-v2.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/assets/setup/v2/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=31536000, immutable"}]}
   ]
 }

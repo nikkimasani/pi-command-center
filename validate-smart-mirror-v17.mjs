@@ -9,28 +9,33 @@ const requireFile=(p,min=1)=>{
 };
 
 const html=requireFile('index.html',50000);
-const js=requireFile('smart-mirror-v17.js',15000);
-requireFile('assets/projects/smart-mirror/v16/visual-sprite.b64',100000);
-requireFile('assets/generic/pi5-board.jpg',20000);
+const js=requireFile('smart-mirror-v17.js',20000);
 
 if(!html.includes('/smart-mirror-v17.js?v=17.0'))fail.push('built index is missing V17 entry script');
 if(/smart-mirror-v1(?:0|1|2|3|4|5|6)[^"']*\.js/i.test(html))fail.push('built index still contains a legacy Smart Mirror enhancement script');
 if(!js.includes('SMART_MIRROR_STEP_COUNT = 16'))fail.push('V17 does not declare the required 16-step course');
-if(!js.includes("16:'sprite-finished'"))fail.push('visual manifest does not cover step 16');
-for(let i=1;i<=16;i++){
-  const token=`${i}:`;
-  const manifest=js.slice(js.indexOf('const VISUAL_MANIFEST'),js.indexOf('const SPRITE_CELL'));
-  if(!manifest.includes(token))fail.push(`visual manifest missing step ${i}`);
-}
-if(!js.includes('replaceBrandMarks'))fail.push('Raspberry brand replacement is missing');
+
+const manifestStart=js.indexOf('const VISUAL_MANIFEST');
+const manifestEnd=js.indexOf('const step=');
+const manifest=js.slice(manifestStart,manifestEnd);
+for(let i=1;i<=16;i++) if(!manifest.includes(`${i}:`)) fail.push(`visual manifest missing step ${i}`);
+
+const visualFunctions=['portsVisual','osVisual','terminal','dsiVisual','displayVisual','editorVisual','mirrorVisual','systemdVisual','frameVisual','wiringVisual','backVisual','mountVisual','visualFor'];
+for(const fn of visualFunctions) if(!js.includes(`function ${fn}`)) fail.push(`missing visual renderer: ${fn}`);
+
+if(!js.includes('replaceBrandMarks'))fail.push('Raspberry branding replacement is missing');
 if(js.includes('🍓'))fail.push('V17 contains the strawberry placeholder');
+if(js.includes('SPRITE_PAYLOAD')||js.includes('visual-sprite.b64'))fail.push('V17 still depends on the corrupted sprite pipeline');
 if(!js.includes("genericHardware.style.display='none'"))fail.push('generic hardware fallback is not disabled for Smart Mirror');
 if(!js.includes("quicklinks.style.display='none'"))fail.push('generic project quick links are not disabled for Smart Mirror');
-if(!js.includes("SPRITE_PAYLOAD"))fail.push('generated hardware visual payload is not wired');
+if(!js.includes("case 'ports'")||!js.includes("case 'finished'"))fail.push('visual switch does not span first and final checkpoints');
+if(!js.includes('Raspberry Pi 5 port map'))fail.push('Step 1 annotated port map is missing');
+if(!js.includes('Raspberry Pi OS'))fail.push('Step 2 Raspberry Pi OS visual is missing');
+if(!js.includes('DSI ribbon: unlock'))fail.push('DSI instructional diagram is missing');
 
 if(fail.length){
   console.error('\nSmart Mirror V17 validation FAILED');
   fail.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Smart Mirror V17 validation passed: 16 steps, full visual manifest, no legacy scripts, no strawberry placeholder, required assets present.');
+console.log('Smart Mirror V17 validation passed: 16 steps, 16 deterministic visuals, no legacy scripts, no strawberry placeholder, no sprite dependency.');

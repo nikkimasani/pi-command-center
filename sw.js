@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pi-command-v52';
+const CACHE_NAME = 'pi-command-v53';
 
 const STATIC_ASSETS = [
   '/', '/index.html', '/manifest.json', '/icon-192.svg', '/icon-512.svg', '/icon-maskable.svg',
@@ -28,8 +28,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.pathname === '/smart-mirror-v17.js') {
-    event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => response.ok ? response : Promise.reject(new Error('V17 unavailable'))).catch(() => caches.match(event.request) || caches.match(url.pathname)));
+  if (url.pathname === '/smart-mirror-v17.js' || url.pathname.startsWith('/icon-')) {
+    event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => response.ok ? response : Promise.reject(new Error('V17 asset unavailable'))).catch(() => caches.match(event.request) || caches.match(url.pathname)));
     return;
   }
 

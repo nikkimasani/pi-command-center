@@ -12,9 +12,29 @@ html=html.replace(/\n?<script\s+src="\/responsive-v1\.js(?:\?[^"']*)?"\s*><\/scr
 html=html.replace(/\n?<script\s+src="\/shared-setup-v2\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
 html=html.replace(/\n?<script>queueMicrotask\(.*?window\.renderHome\(\).*?<\/script>/gis,'');
 
-// Replace legacy Shared Setup image references in the source data as an additional guard.
-html=html.replaceAll('/assets/projects/smart-mirror/v15/step-01-parts.jpg','/assets/setup/v2/step-01-microsd-setup.svg');
-html=html.replaceAll('/assets/setup/imager-ssh-generated.jpg','/assets/setup/v2/step-02-imager-settings.svg');
+// Replace the complete base Shared Setup dataset. This ensures that even if the V2
+// enhancement script cannot execute, the built-in fallback still uses only V2 visuals.
+const foundation=`window.PI_FOUNDATION=[
+F('Flash Raspberry Pi OS 64-bit Desktop to the 128 GB SanDisk microSD card with Raspberry Pi Imager.',[
+  {label:'microSD setup',src:'/assets/setup/v2/step-01-microsd-setup.svg',caption:'Prepare the correct 128 GB card and Raspberry Pi OS image before writing.'}
+]),
+F('Configure Raspberry Pi Imager: hostname nikkipi, SSH, Wi-Fi, username/password, and America/Chicago.',[
+  {label:'Imager settings',src:'/assets/setup/v2/step-02-imager-settings.svg',caption:'Verify SSH, Wi-Fi, hostname and locale before writing the card.'}
+]),
+F('Install the Raspberry Pi 5 securely in the metal case while keeping required ports and DSI access clear.',[
+  {label:'Metal case assembly',src:'/assets/setup/v2/step-03-metal-case-assembly.svg',caption:'Align the board with its standoffs and keep airflow and connectors unobstructed.'}
+]),
+F('Boot Raspberry Pi OS, confirm Wi-Fi, update the system, and reboot cleanly.',[
+  {label:'First boot and update',src:'/assets/setup/v2/step-04-first-boot-guide.svg',caption:'Confirm the desktop and Wi-Fi, then update and reboot before hardware work.'}
+]),
+F('Power the Pi fully off and connect the DSI ribbon using the unlock, align, insert, and lock sequence.',[
+  {label:'DSI connection',src:'/assets/setup/v2/step-05-dsi-connection-guide.svg',caption:'Never handle the DSI ribbon while the Pi is powered.'}
+]),
+F('Verify display, touch, Wi-Fi, SSH, and temperature before starting project-specific assembly.',[
+  {label:'Build verification',src:'/assets/setup/v2/step-06-build-verification.svg',caption:'Continue only after all five shared-system checks pass consistently.'}
+])
+];`;
+html=html.replace(/window\.PI_FOUNDATION=\[[\s\S]*?\];\s*window\.PI_PROJECTS=\[/,`${foundation}\nwindow.PI_PROJECTS=[`);
 
 // Replace embedded strawberry favicon and visible shell branding.
 html=html.replace(/^\s*<link\s+rel="icon".*$/mi,'  <link rel="icon" href="/icon-192.svg">');

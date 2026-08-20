@@ -6,8 +6,6 @@
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/smart-mirror-v17.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/assets/projects/smart-mirror/v16/visual-sprite.b64","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
-    {"source":"/assets/generic/pi5-board.jpg","headers":[{"key":"Cache-Control","value":"public, max-age=86400"}]}
+    {"source":"/smart-mirror-v17.js","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]}
   ]
 }

@@ -10,10 +10,11 @@ html=html.replace(/\n?<script\s+src="\/smart-mirror-v16-sprite\.js(?:\?[^"']*)?"
 html=html.replace(/\n?<script\s+src="\/smart-mirror-v17\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
 html=html.replace(/\n?<script>queueMicrotask\(.*?window\.renderHome\(\).*?<\/script>/gis,'');
 
-// Replace the entire favicon tag, not a substring of its data URI.
-html=html.replace(/<link\s+rel="icon"[^>]*>/i,'<link rel="icon" href="/icon-192.svg">');
+// The source favicon is an inline SVG data URI containing raw > characters.
+// Replace the complete source line so no fragment of the embedded SVG can survive.
+html=html.replace(/^\s*<link\s+rel="icon".*$/mi,'  <link rel="icon" href="/icon-192.svg">');
 
-// Use the real app icon in visible shell branding.
+// Use the raspberry app icon in visible shell branding.
 html=html.replace(/<div class="logo-icon">[\s\S]*?<\/div>/i,'<div class="logo-icon"><img src="/icon-192.svg" alt="Raspberry" width="28" height="28"></div>');
 html=html.replace(/<span class="emoji">[\s\S]*?<\/span>/i,'<span class="emoji"><img src="/icon-192.svg" alt="Raspberry" width="22" height="22"></span>');
 

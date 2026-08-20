@@ -31,9 +31,9 @@ html=html.replaceAll('🍓','◉');
 const responsive='<script src="/responsive-v1.js?v=1.0"></script>';
 const setup='<script src="/shared-setup-v2.js?v=2.0"></script>';
 const v17='<script src="/smart-mirror-v17.js?v=17.2"></script>';
-const courses='<script src="/project-courses-v1.js?v=1.0"></script>';
+const courses='<script src="/project-courses-v1.js?v=1.1"></script>';
 const rerender='<script>queueMicrotask(()=>{if(window.renderHome&&document.querySelector("#homeView.active"))window.renderHome();});</script>';
 html=html.replace('</body>',`${responsive}\n${setup}\n${v17}\n${courses}\n${rerender}\n</body>`);
 
 fs.writeFileSync(path,html);
-console.log('Pi Command Center built: responsive V1 + Shared Setup V2 + Smart Mirror V17.2 + Project Courses V1');
+console.log('Pi Command Center built: responsive V1 + Shared Setup V2 + Smart Mirror V17.2 + Project Courses V1.1');

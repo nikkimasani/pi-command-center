@@ -1,6 +1,6 @@
 {
   "git": {"deploymentEnabled": true},
-  "buildCommand": "node build-v17.mjs && node validate-smart-mirror-v17.mjs",
+  "buildCommand": "node seed-setup-v2-assets.mjs && node build-v17.mjs && node validate-smart-mirror-v17.mjs",
   "outputDirectory": ".",
   "headers": [
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},

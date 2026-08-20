@@ -1,5 +1,6 @@
 {
   "git": {"deploymentEnabled": true},
+  "buildCommand": "node inject-v16.mjs",
   "outputDirectory": ".",
   "headers": [
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},

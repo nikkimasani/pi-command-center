@@ -1,8 +1,8 @@
-const CACHE_NAME = 'pi-command-v55';
+const CACHE_NAME = 'pi-command-v56';
 
 const STATIC_ASSETS = [
   '/', '/index.html', '/manifest.json', '/icon-192.svg', '/icon-512.svg', '/icon-maskable.svg',
-  '/responsive-v1.js', '/shared-setup-v2.js', '/smart-mirror-v17.js',
+  '/responsive-v1.js', '/shared-setup-v2.js', '/smart-mirror-v17.js', '/project-courses-v1.js',
   '/assets/setup/v2/step-01-microsd-setup.svg',
   '/assets/setup/v2/step-02-imager-settings.svg',
   '/assets/setup/v2/step-03-metal-case-assembly.svg',
@@ -34,7 +34,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.pathname === '/smart-mirror-v17.js' || url.pathname === '/responsive-v1.js' || url.pathname === '/shared-setup-v2.js' || url.pathname.startsWith('/icon-') || url.pathname.startsWith('/assets/setup/v2/')) {
+  if (url.pathname === '/smart-mirror-v17.js' || url.pathname === '/responsive-v1.js' || url.pathname === '/shared-setup-v2.js' || url.pathname === '/project-courses-v1.js' || url.pathname.startsWith('/icon-') || url.pathname.startsWith('/assets/setup/v2/')) {
     event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => response.ok ? response : Promise.reject(new Error('fresh asset unavailable'))).catch(() => caches.match(event.request) || caches.match(url.pathname)));
     return;
   }

@@ -10,19 +10,24 @@ const requireFile=(p,min=1)=>{
 
 const html=requireFile('index.html',50000);
 const js=requireFile('smart-mirror-v17.js',20000);
+const responsive=requireFile('responsive-v1.js',4000);
 const icon192=requireFile('icon-192.svg',500);
 const icon512=requireFile('icon-512.svg',500);
 const iconMask=requireFile('icon-maskable.svg',500);
 
+if(!html.includes('/responsive-v1.js?v=1.0'))fail.push('built index is missing responsive V1 layer');
 if(!html.includes('/smart-mirror-v17.js?v=17.2'))fail.push('built index is missing V17.2 entry script');
 if(/smart-mirror-v1(?:0|1|2|3|4|5|6)[^"']*\.js/i.test(html))fail.push('built index still contains a legacy Smart Mirror enhancement script');
 if(html.includes('🍓'))fail.push('built production shell still contains the strawberry placeholder');
 if(!html.includes('<link rel="icon" href="/icon-192.svg">'))fail.push('production favicon tag is not exact');
-if(html.includes('</svg>">')||html.includes('</svg>">'))fail.push('production favicon markup contains malformed SVG data-URI remnants');
+if(html.includes('</svg>">'))fail.push('production favicon markup contains malformed SVG data-URI remnants');
 if(!html.includes('<div class="logo-icon"><img src="/icon-192.svg"'))fail.push('desktop shell does not use raspberry app icon');
 if(!html.includes('<span class="emoji"><img src="/icon-192.svg"'))fail.push('mobile shell does not use raspberry app icon');
 if(!html.includes('queueMicrotask(()=>{if(window.renderHome'))fail.push('first-load home metadata rerender is missing');
 if(!js.includes('SMART_MIRROR_STEP_COUNT = 16'))fail.push('V17 does not declare the required 16-step course');
+
+const responsiveChecks=['@media (max-width:980px)','@media (max-width:760px)','@media (max-width:480px)','orientation:landscape','pointer:coarse','prefers-reduced-motion','100dvh','env(safe-area-inset-bottom)','overflow-x:hidden'];
+for(const token of responsiveChecks) if(!responsive.includes(token)) fail.push(`responsive layer missing: ${token}`);
 
 for(const [name,content] of [['icon-192.svg',icon192],['icon-512.svg',icon512],['icon-maskable.svg',iconMask]]){
   if(content.includes('🍓'))fail.push(`${name} still contains strawberry artwork`);
@@ -48,8 +53,8 @@ if(!js.includes('Raspberry Pi OS'))fail.push('Step 2 Raspberry Pi OS visual is m
 if(!js.includes('DSI ribbon: unlock'))fail.push('DSI instructional diagram is missing');
 
 if(fail.length){
-  console.error('\nSmart Mirror V17.2 validation FAILED');
+  console.error('\nPi Command Center responsive + Smart Mirror validation FAILED');
   fail.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Smart Mirror V17.2 validation passed: 16 deterministic visuals, clean raspberry branding, no legacy scripts, no sprite dependency, first-load metadata refreshed.');
+console.log('Pi Command Center validation passed: responsive phone/tablet/desktop/Pi-display layout + Smart Mirror V17.2 + clean branding.');

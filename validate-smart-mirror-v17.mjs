@@ -42,11 +42,21 @@ for(const p of setupAssets){
   if(svg.includes('🍓'))fail.push(`strawberry placeholder found in ${p}`);
 }
 for(let i=1;i<=6;i++) if(!setup.includes(`id: ${i}`)) fail.push(`Shared Setup manifest missing step ${i}`);
+
+const foundationStart=html.indexOf('window.PI_FOUNDATION=[');
+const foundationEnd=html.indexOf('window.PI_PROJECTS=[',foundationStart);
+const foundationHtml=foundationStart>=0&&foundationEnd>foundationStart?html.slice(foundationStart,foundationEnd):'';
+if(!foundationHtml)fail.push('built HTML Shared Setup fallback dataset is missing');
 for(const p of setupAssets){
   const webPath='/'+p;
   if(!setup.includes(webPath)) fail.push(`Shared Setup manifest missing asset path ${webPath}`);
   if(!sw.includes(webPath)) fail.push(`service worker missing Setup V2 asset ${webPath}`);
+  if(!foundationHtml.includes(webPath)) fail.push(`base Shared Setup fallback missing V2 asset ${webPath}`);
 }
+if((foundationHtml.match(/F\('/g)||[]).length!==6)fail.push('base Shared Setup fallback is not exactly six steps');
+const forbiddenFoundation=['/assets/projects/smart-mirror/v15/step-01-parts.jpg','/assets/setup/imager-ssh-generated.jpg','/assets/generic/pi5-board.jpg','/assets/boot-screen.jpg'];
+for(const ref of forbiddenFoundation) if(foundationHtml.includes(ref)) fail.push(`legacy/fallback image remains inside Shared Setup dataset: ${ref}`);
+
 if(!setup.includes("window.SHARED_PI_SETUP_V2"))fail.push('Shared Setup V2 does not expose its strict manifest');
 if(!setup.includes('sharedSetupV2Render'))fail.push('Shared Setup V2 renderer override is missing');
 if(!setup.includes('@media(max-width:900px)')||!setup.includes('@media(max-width:560px)'))fail.push('Shared Setup V2 responsive breakpoints are missing');
@@ -80,4 +90,4 @@ if(fail.length){
   fail.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Pi Command Center validation passed: Shared Setup V2 six-vector course + responsive V1 + Smart Mirror V17.2 + V55 cache + no legacy setup assets.');
+console.log('Pi Command Center validation passed: Shared Setup V2 six-vector primary + base fallback course, responsive V1, Smart Mirror V17.2, V55 cache, no legacy setup assets.');

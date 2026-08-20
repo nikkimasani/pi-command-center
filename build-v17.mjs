@@ -8,12 +8,21 @@ html=html.replace(/\n?<script\s+src="\/smart-mirror-v(?:10|11[^"']*|12[^"']*|13[
 html=html.replace(/\n?<script\s+src="\/smart-mirror-v16-hires\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
 html=html.replace(/\n?<script\s+src="\/smart-mirror-v16-sprite\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
 html=html.replace(/\n?<script\s+src="\/smart-mirror-v17\.js(?:\?[^"']*)?"\s*><\/script>/gi,'');
+html=html.replace(/\n?<script>queueMicrotask\(.*?window\.renderHome\(\).*?<\/script>/gis,'');
 
-// Remove the old strawberry placeholder from the actual built app shell.
-html=html.replace(/<link rel="icon" href="data:image\/svg\+xml,[^"]*🍓[^>]*>/g,'<link rel="icon" href="/icon-192.svg">');
+// Replace the entire favicon tag, not a substring of its data URI.
+html=html.replace(/<link\s+rel="icon"[^>]*>/i,'<link rel="icon" href="/icon-192.svg">');
+
+// Use the real app icon in visible shell branding.
+html=html.replace(/<div class="logo-icon">[\s\S]*?<\/div>/i,'<div class="logo-icon"><img src="/icon-192.svg" alt="Raspberry" width="28" height="28"></div>');
+html=html.replace(/<span class="emoji">[\s\S]*?<\/span>/i,'<span class="emoji"><img src="/icon-192.svg" alt="Raspberry" width="22" height="22"></span>');
+
+// Remove any remaining legacy strawberry text token from built markup/data.
 html=html.replaceAll('🍓','◉');
 
-const tag='<script src="/smart-mirror-v17.js?v=17.1"></script>';
-html=html.replace('</body>',`${tag}\n</body>`);
+const v17='<script src="/smart-mirror-v17.js?v=17.2"></script>';
+const rerender='<script>queueMicrotask(()=>{if(window.renderHome&&document.querySelector("#homeView.active"))window.renderHome();});</script>';
+html=html.replace('</body>',`${v17}\n${rerender}\n</body>`);
+
 fs.writeFileSync(path,html);
-console.log('Smart Mirror V17.1 is the only Smart Mirror enhancement; strawberry placeholder removed from built shell');
+console.log('Smart Mirror V17.2 shell built: one renderer, clean raspberry branding, first-load 16-step home metadata');

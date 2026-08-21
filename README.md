@@ -15,3 +15,5 @@ A responsive Raspberry Pi project guide deployed on Vercel.
 ## Production URL
 
 https://pi-command-center.vercel.app
+
+Production release trigger: 2026-08-21.

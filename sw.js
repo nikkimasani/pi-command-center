@@ -1,49 +1,14 @@
-const CACHE_NAME = 'pi-command-v56';
-
-const STATIC_ASSETS = [
-  '/', '/index.html', '/manifest.json', '/icon-192.svg', '/icon-512.svg', '/icon-maskable.svg',
-  '/responsive-v1.js', '/shared-setup-v2.js', '/smart-mirror-v17.js', '/project-courses-v1.js',
-  '/assets/setup/v2/step-01-microsd-setup.svg',
-  '/assets/setup/v2/step-02-imager-settings.svg',
-  '/assets/setup/v2/step-03-metal-case-assembly.svg',
-  '/assets/setup/v2/step-04-first-boot-guide.svg',
-  '/assets/setup/v2/step-05-dsi-connection-guide.svg',
-  '/assets/setup/v2/step-06-build-verification.svg'
-];
-
-const OFFLINE_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pi Command Center — Offline</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070b12;color:#f4f7fb;font:16px/1.5 Inter,system-ui,sans-serif;padding:24px}.card{max-width:420px;background:#0d131d;border:1px solid #243044;border-radius:20px;padding:24px;text-align:center}</style></head><body><div class="card"><h1>Offline</h1><p>Your saved Pi Command Center shell is available, but this screen needs a cached page or network connection.</p></div></body></html>`;
-
-self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS)).then(() => self.skipWaiting()));
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
-});
-
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
-
-  if (event.request.mode === 'navigate' || url.pathname === '/' || url.pathname === '/index.html') {
-    event.respondWith(fetch(event.request, { cache: 'no-store' }).catch(async () => {
-      const cached = await caches.match('/index.html');
-      if (cached) return cached;
-      return new Response(OFFLINE_HTML, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
-    }));
-    return;
-  }
-
-  if (url.pathname === '/smart-mirror-v17.js' || url.pathname === '/responsive-v1.js' || url.pathname === '/shared-setup-v2.js' || url.pathname === '/project-courses-v1.js' || url.pathname.startsWith('/icon-') || url.pathname.startsWith('/assets/setup/v2/')) {
-    event.respondWith(fetch(event.request, { cache: 'no-store' }).then(response => response.ok ? response : Promise.reject(new Error('fresh asset unavailable'))).catch(() => caches.match(event.request) || caches.match(url.pathname)));
-    return;
-  }
-
-  event.respondWith(fetch(event.request).then(response => {
-    if (response.ok) {
-      const clone = response.clone();
-      caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-    }
-    return response;
-  }).catch(() => caches.match(event.request)));
+const CACHE_NAME='pi-command-course-v2';
+const STATIC_ASSETS=['/','/index.html','/course-v2.html','/course-v2.css?v=2.0.0','/course-v2-data.js?v=2.0.0','/course-v2-fixes.js?v=2.0.1','/course-v2.js?v=2.0.0','/manifest.json','/icon-192.svg','/icon-512.svg','/icon-maskable.svg','/assets/setup/imager-ssh-generated.jpg','/assets/boot-screen.jpg','/assets/pi5-port-map-reference.jpg','/assets/smart-mirror-finished-reference.jpg','/assets/smart-mirror/dsi-align.jpg','/assets/smart-mirror/dsi-seated.jpg'];
+const OFFLINE='<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pi Command Center Offline</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070b12;color:#f4f7fb;font:16px/1.5 system-ui;padding:24px}.c{max-width:430px;background:#0d1520;border:1px solid #27364a;border-radius:18px;padding:24px}h1{margin-top:0}p{color:#9eafc4}</style><div class="c"><h1>Offline</h1><p>The full course shell is not available from the network right now. Reconnect and refresh. Previously cached course assets will continue to be used when available.</p></div>';
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(STATIC_ASSETS)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{
+ if(e.request.method!=='GET')return;
+ const url=new URL(e.request.url);
+ if(e.request.mode==='navigate'||url.pathname==='/'||url.pathname==='/index.html'||url.pathname==='/course-v2.html'){
+   e.respondWith(fetch(e.request,{cache:'no-store'}).then(res=>{if(res.ok){const clone=res.clone();caches.open(CACHE_NAME).then(c=>c.put('/index.html',clone));}return res;}).catch(()=>caches.match('/index.html').then(r=>r||caches.match('/course-v2.html')).then(r=>r||new Response(OFFLINE,{headers:{'Content-Type':'text/html; charset=utf-8'}}))));
+   return;
+ }
+ e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(res=>{if(res.ok){const clone=res.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,clone));}return res;})));
 });

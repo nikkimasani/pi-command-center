@@ -1,15 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Pi Command Center raspberry icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" fill="#070b12"/>
-  <g transform="translate(32 32) scale(.875)">
-    <g fill="#c51a4a">
-      <circle cx="186" cy="205" r="66"/><circle cx="256" cy="181" r="66"/><circle cx="326" cy="205" r="66"/>
-      <circle cx="164" cy="274" r="64"/><circle cx="232" cy="264" r="66"/><circle cx="300" cy="268" r="66"/><circle cx="352" cy="278" r="58"/>
-      <circle cx="208" cy="338" r="59"/><circle cx="276" cy="338" r="62"/><circle cx="322" cy="338" r="54"/>
-    </g>
-    <g fill="#65ad4b">
-      <ellipse cx="218" cy="112" rx="37" ry="72" transform="rotate(-40 218 112)"/>
-      <ellipse cx="294" cy="112" rx="37" ry="72" transform="rotate(40 294 112)"/>
-      <ellipse cx="256" cy="90" rx="32" ry="66"/>
-    </g>
-  </g>
+  <text x="256" y="340" font-size="260" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji">🍓</text>
 </svg>

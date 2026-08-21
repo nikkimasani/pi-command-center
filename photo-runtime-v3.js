@@ -1,0 +1,28 @@
+(()=>{
+'use strict';
+const ORDER=['smart_1','smart_2','smart_3','smart_4','dashboard_1','dashboard_2','dashboard_3','dashboard_4','ai_1','ai_2','ai_3','ai_4','cyber_1','cyber_2','cyber_3','cyber_4','home_1','home_2','home_3','home_4','electronics_1','electronics_2','electronics_3','electronics_4','pomodoro_1','pomodoro_2','pomodoro_3','pomodoro_4','glance_1','glance_2','glance_3','glance_4','photo_1','photo_2','photo_3','magic_1','magic_2','magic_3','magic_4','shared_05','shared_06','shared_08','shared_09','shared_10','shared_11','shared_12','detail_06','detail_09','detail_12','dsi_5'];
+const INDEX=Object.fromEntries(ORDER.map((k,i)=>[k,i]));
+const style=document.createElement('style');
+style.textContent=`.photo-sprite-crop{width:100%;aspect-ratio:16/9;background-image:url('/assets/photo-sprite-v3.jpg');background-size:500% 1000%;background-repeat:no-repeat;background-color:#05080d;display:block}.visual-frame img[src*="photo-sprite-v3.jpg#piPhoto="]{opacity:0;position:absolute;pointer-events:none}.photo-sprite-crop[role="img"]{outline:none}`;
+document.head.appendChild(style);
+function process(root=document){
+ root.querySelectorAll?.('.visual-frame img[src*="photo-sprite-v3.jpg#piPhoto="]').forEach(img=>{
+  if(img.dataset.photoSpriteDone)return;
+  img.dataset.photoSpriteDone='1';
+  let key='';
+  try{key=decodeURIComponent(new URL(img.src).hash.replace(/^#piPhoto=/,''));}catch(_){return;}
+  const idx=INDEX[key]; if(idx==null)return;
+  const col=idx%5,row=Math.floor(idx/5);
+  const crop=document.createElement('div');
+  crop.className='photo-sprite-crop';
+  crop.setAttribute('role','img');
+  crop.setAttribute('aria-label',img.alt||'Photorealistic instructional step reference');
+  crop.dataset.photoAsset=key;
+  crop.style.backgroundPosition=`${col*25}% ${row*(100/9)}%`;
+  img.replaceWith(crop);
+ });
+}
+process();
+new MutationObserver(m=>{for(const x of m){for(const n of x.addedNodes){if(n.nodeType===1)process(n)}}}).observe(document.documentElement,{subtree:true,childList:true});
+window.PI_PHOTO_RUNTIME_V3={version:'3.0.0',assets:ORDER.length,process};
+})();

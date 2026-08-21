@@ -1,28 +1,11 @@
 const fs=require('fs');const vm=require('vm');
-const required=['index.html','course-v2.html','course-v2.css','course-v2-data.js','course-v2-fixes.js','course-v2.js','sw.js'];for(const f of required){if(!fs.existsSync(f))throw new Error(`Missing ${f}`)}
-new vm.Script(fs.readFileSync('course-v2.js','utf8'),{filename:'course-v2.js'});
-new vm.Script(fs.readFileSync('course-v2-fixes.js','utf8'),{filename:'course-v2-fixes.js'});
-const context={window:{}};vm.createContext(context);new vm.Script(fs.readFileSync('course-v2-data.js','utf8'),{filename:'course-v2-data.js'}).runInContext(context);new vm.Script(fs.readFileSync('course-v2-fixes.js','utf8'),{filename:'course-v2-fixes.js'}).runInContext(context);
+const required=['index.html','course-v2.html','course-v2.css','course-v2-data.js','course-v2-fixes.js','course-v2.js','photo-bind-v3.js','photo-runtime-v3.js','assets/photo-sprite-v3.jpg','sw.js'];for(const f of required){if(!fs.existsSync(f))throw new Error(`Missing ${f}`)}
+for(const f of ['course-v2.js','course-v2-fixes.js','photo-bind-v3.js','photo-runtime-v3.js'])new vm.Script(fs.readFileSync(f,'utf8'),{filename:f});
+const context={window:{},console};vm.createContext(context);for(const f of ['course-v2-data.js','course-v2-fixes.js','photo-bind-v3.js'])new vm.Script(fs.readFileSync(f,'utf8'),{filename:f}).runInContext(context);
 const courses=context.window.PI_COURSES_V2;const expected=['smart-mirror','dashboard','ai-terminal','cyberdeck','home-panel','electronics-lab','pomodoro','glance','photo-frame','magic-frame'];
-if(!Array.isArray(courses)||courses.length!==10)throw new Error(`Expected 10 courses, found ${courses?.length}`);
-for(const id of expected){if(!courses.some(c=>c.id===id))throw new Error(`Missing course ${id}`)}
-let phases=0,visuals=0,actions=0;
-for(const c of courses){
- if(!c.title||!c.goal||!Array.isArray(c.materials)||c.materials.length<4)throw new Error(`Incomplete course metadata: ${c.id}`);
- if(!Array.isArray(c.safety)||!c.safety.length)throw new Error(`Missing safety guidance: ${c.id}`);
- if(!Array.isArray(c.phases)||c.phases.length<8)throw new Error(`Course ${c.id} has only ${c.phases?.length||0} phases`);
- for(const [i,p] of c.phases.entries()){
-  phases++;
-  if(!p.title||!p.why||!p.time)throw new Error(`Incomplete phase metadata: ${c.id} #${i+1}`);
-  if(!p.visual||!p.visual.scene)throw new Error(`Missing visual: ${c.id} #${i+1}`);visuals++;
-  if(!Array.isArray(p.actions)||p.actions.length<4)throw new Error(`Too few actions: ${c.id} #${i+1}`);
-  for(const a of p.actions){if(!a.title||!a.detail)throw new Error(`Incomplete action: ${c.id} #${i+1}`);actions++}
-  if(!Array.isArray(p.success)||!p.success.length)throw new Error(`Missing success gate: ${c.id} #${i+1}`);
-  if(typeof p.warning!=='string')throw new Error(`Warning must be text: ${c.id} #${i+1}`);
-  if(!Array.isArray(p.trouble))throw new Error(`Troubleshooting must be a list: ${c.id} #${i+1}`);
-  if(!Array.isArray(p.commands))throw new Error(`Commands must be a list: ${c.id} #${i+1}`);
- }
-}
-const html=fs.readFileSync('index.html','utf8');for(const marker of ['COURSE ENGINE V2.0.0','course-v2-data.js?v=2.0.0','course-v2-fixes.js?v=2.0.1','course-v2.js?v=2.0.0','course-v2.css?v=2.0.0']){if(!html.includes(marker))throw new Error(`index.html missing ${marker}`)}
-if(!fs.readFileSync('sw.js','utf8').includes('pi-command-course-v2'))throw new Error('Service worker cache version is not V2');
-console.log(`COURSE_VALIDATION_OK courses=${courses.length} phases=${phases} visuals=${visuals} actions=${actions} version=${context.window.PI_COURSES_V2_VERSION} patch=${context.window.PI_COURSES_V2_PATCH}`);
+if(!Array.isArray(courses)||courses.length!==10)throw new Error(`Expected 10 courses, found ${courses?.length}`);for(const id of expected){if(!courses.some(c=>c.id===id))throw new Error(`Missing course ${id}`)}
+let phases=0,visuals=0,actions=0,photoPhases=0;const keys=[];
+for(const c of courses){if(!c.title||!c.goal||!Array.isArray(c.materials)||c.materials.length<4)throw new Error(`Incomplete course metadata: ${c.id}`);if(!Array.isArray(c.safety)||!c.safety.length)throw new Error(`Missing safety guidance: ${c.id}`);if(!Array.isArray(c.phases)||c.phases.length<8)throw new Error(`Course ${c.id} has only ${c.phases?.length||0} phases`);for(const [i,p] of c.phases.entries()){phases++;if(!p.title||!p.why||!p.time)throw new Error(`Incomplete phase metadata: ${c.id} #${i+1}`);if(!p.visual||!p.visual.scene)throw new Error(`Missing visual: ${c.id} #${i+1}`);visuals++;if(!Array.isArray(p.visual.photos)||!p.visual.photos.length)throw new Error(`Missing Photo V3 view: ${c.id} #${i+1}`);if(!String(p.visual.photos[0].src||'').includes('/assets/photo-sprite-v3.jpg#piPhoto='))throw new Error(`Photo V3 is not primary: ${c.id} #${i+1}`);if(!p.visual.photoAssetKey)throw new Error(`Missing photo asset key: ${c.id} #${i+1}`);keys.push(p.visual.photoAssetKey);photoPhases++;if(!Array.isArray(p.actions)||p.actions.length<4)throw new Error(`Too few actions: ${c.id} #${i+1}`);for(const a of p.actions){if(!a.title||!a.detail)throw new Error(`Incomplete action: ${c.id} #${i+1}`);actions++}if(!Array.isArray(p.success)||!p.success.length)throw new Error(`Missing success gate: ${c.id} #${i+1}`);if(typeof p.warning!=='string')throw new Error(`Warning must be text: ${c.id} #${i+1}`);if(!Array.isArray(p.trouble))throw new Error(`Troubleshooting must be a list: ${c.id} #${i+1}`);if(!Array.isArray(p.commands))throw new Error(`Commands must be a list: ${c.id} #${i+1}`)}}
+if(phases!==90||photoPhases!==90)throw new Error(`Expected 90 photo phases, got phases=${phases} photos=${photoPhases}`);if(new Set(keys).size<35)throw new Error(`Photo V3 variety too low: ${new Set(keys).size} unique assets`);const sprite=fs.statSync('assets/photo-sprite-v3.jpg');if(sprite.size<250000)throw new Error(`Photo sprite unexpectedly small: ${sprite.size}`);
+const html=fs.readFileSync('index.html','utf8');for(const marker of ['COURSE ENGINE V2.0.0 • PHOTO V3','course-v2-data.js?v=2.0.0','course-v2-fixes.js?v=2.0.1','photo-bind-v3.js?v=3.0.0','course-v2.js?v=2.0.0','photo-runtime-v3.js?v=3.0.0','course-v2.css?v=2.0.0'])if(!html.includes(marker))throw new Error(`index.html missing ${marker}`);const sw=fs.readFileSync('sw.js','utf8');for(const marker of ['pi-command-course-v3','photo-bind-v3.js?v=3.0.0','photo-runtime-v3.js?v=3.0.0','/assets/photo-sprite-v3.jpg'])if(!sw.includes(marker))throw new Error(`Service worker missing ${marker}`);
+console.log(`COURSE_VALIDATION_OK courses=${courses.length} phases=${phases} visuals=${visuals} photoPhases=${photoPhases} uniquePhotoAssets=${new Set(keys).size} actions=${actions} version=${context.window.PI_COURSES_V2_VERSION} patch=${context.window.PI_COURSES_V2_PATCH} photo=${context.window.PI_PHOTO_BIND_V3}`);

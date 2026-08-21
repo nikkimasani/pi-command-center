@@ -1,11 +1,13 @@
 {
   "outputDirectory": ".",
-  "rewrites": [
-    { "source": "/", "destination": "/course-v2.html" }
-  ],
+  "buildCommand": "node validate-course.js",
   "headers": [
     {
       "source": "/",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
+    },
+    {
+      "source": "/index.html",
       "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     },
     {

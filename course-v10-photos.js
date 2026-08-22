@@ -56,6 +56,7 @@ function physicalKey(course,phase){
  return null;
 }
 const audit={version:'13.0.0',total:0,exactPhotos:0,scalableRefs:0,generatedGuides:0,photoKeys:{},needsHighRes:[]};
+const keyUse={};
 for(const course of (window.PI_COURSES_V2||[])){
  course.phases.forEach((phase,i)=>{
   audit.total++;const v=phase.visual||(phase.visual={});v.photo=null;v.photos=[];
@@ -63,7 +64,7 @@ for(const course of (window.PI_COURSES_V2||[])){
   const sw=softwareReference(course,phase);if(sw){v.photos=[sw];audit.scalableRefs++;return;}
   if(/dsi|ribbon|mipi/i.test(phase.title||'')){v.photos=[REF('/assets/reference/dsi-ribbon.svg?v=11.0.0','Exact DSI / MIPI reference','Power off first. Open the latch evenly, align the contacts, insert straight and close evenly.')];audit.scalableRefs++;return;}
   const k=physicalKey(course,phase);
-  if(k&&INDEX[k]!=null){v.photos=[PHOTO(k,phase)];audit.exactPhotos++;audit.photoKeys[k]=(audit.photoKeys[k]||0)+1;return;}
+  if(k&&INDEX[k]!=null&&(keyUse[k]||0)<2){keyUse[k]=(keyUse[k]||0)+1;v.photos=[PHOTO(k,phase)];audit.exactPhotos++;audit.photoKeys[k]=(audit.photoKeys[k]||0)+1;return;}
   v.photos=[REF(makeGuideSvg(course,phase),'Phase-specific build guide','No exact high-resolution photo is assigned here yet, so Pi Hub uses a sharp guide instead of a repeated or pixelated image.','Instructional guide')];audit.generatedGuides++;audit.needsHighRes.push({course:course.title,phase:phase.title});
  });
 }

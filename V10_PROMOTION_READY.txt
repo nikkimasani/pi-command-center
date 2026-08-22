@@ -1,0 +1,2 @@
+Pi Command Center V10 preview validation passed on release/photo-v10.
+Validated: 11 courses, 118 phases, 118 visual phases, 44 active unique photo cells, 114 sprite references, 386187-byte verified source sprite, 8 prerequisite phases.

@@ -1,0 +1,1 @@
+Approved high-resolution batch: 10 assets. Upload target: 1672x941 WebP. Exact mappings only. Production remains on V14 until the complete V15 preview passes.

@@ -9,13 +9,19 @@ vm.createContext(context);
 for(const f of ['course-v2-data.js','course-v2-fixes.js','course-v4-enhancements.js','course-v9-prerequisite.js','course-v10-photos.js'])new vm.Script(fs.readFileSync(f,'utf8'),{filename:f}).runInContext(context);
 const courses=context.window.PI_COURSES_V2;if(!Array.isArray(courses)||courses.length!==11)throw new Error(`Expected 11 courses including prerequisite, got ${courses?.length}`);
 if(courses[0]?.id!=='pi-setup'||courses[0].phases.length!==8)throw new Error('START HERE prerequisite must be first with 8 phases');
-let phases=0,visualPhases=0,spriteRefs=0,scalableRefs=0;const unique=new Set();
-for(const c of courses){for(const p of c.phases){phases++;const photos=p.visual?.photos||[];if(!photos.length)throw new Error(`Missing V11 visual: ${c.id} / ${p.title}`);visualPhases++;for(const x of photos){const src=x.src||'';if(/\.(?:jpg|jpeg)(?:\?|#|$)/i.test(src)&&!src.includes('/assets/photo-sprite-v3.jpg#piPhoto='))throw new Error(`Low-resolution legacy bitmap survived V11: ${c.id} / ${p.title} / ${src}`);if(/\.svg(?:\?|$)/i.test(src)||src.startsWith('data:image/svg+xml'))scalableRefs++;const m=src.match(/photo-sprite-v3\.jpg#piPhoto=([^&]+)/);if(m){spriteRefs++;unique.add(decodeURIComponent(m[1]));}}}}
-if(unique.size<20)throw new Error(`Expected broad physical photo coverage, got only ${unique.size} unique sprite cells`);
-if(scalableRefs<20)throw new Error(`Expected scalable setup/software references, got ${scalableRefs}`);
+let phases=0,visualPhases=0,spriteRefs=0,scalableRefs=0,guides=0;const unique=new Set();
+for(const c of courses){for(const p of c.phases){phases++;const photos=p.visual?.photos||[];if(!photos.length)throw new Error(`Missing V13 visual: ${c.id} / ${p.title}`);visualPhases++;for(const x of photos){const src=x.src||'';if(/\.(?:jpg|jpeg)(?:\?|#|$)/i.test(src)&&!src.includes('/assets/photo-sprite-v3.jpg#piPhoto='))throw new Error(`Low-resolution legacy bitmap survived V13: ${c.id} / ${p.title} / ${src}`);if(/\.svg(?:\?|$)/i.test(src)||src.startsWith('data:image/svg+xml')){scalableRefs++;if((x.kind||'').toLowerCase().includes('guide')||(x.label||'').toLowerCase().includes('guide'))guides++;}const m=src.match(/photo-sprite-v3\.jpg#piPhoto=([^&]+)/);if(m){spriteRefs++;unique.add(decodeURIComponent(m[1]));}}}}
+const audit=context.window.PI_VISUAL_AUDIT_V13;if(!audit||audit.version!=='13.0.0')throw new Error('V13 visual audit metadata missing');
+if(audit.total!==phases)throw new Error(`V13 audit total mismatch ${audit.total} vs ${phases}`);
+if(unique.size<20||unique.size>40)throw new Error(`Unexpected explicit physical photo coverage: ${unique.size} unique sprite cells`);
+if(scalableRefs<50)throw new Error(`Expected at least 50 sharp/scalable references after audit, got ${scalableRefs}`);
+if((audit.duplicates||[]).length)throw new Error(`Photo mapping still over-reuses cells: ${JSON.stringify(audit.duplicates)}`);
+const photoSource=fs.readFileSync('course-v10-photos.js','utf8');
+if(!photoSource.includes("width:min(100%,220px)")||!photoSource.includes("width:min(100%,200px)"))throw new Error('V13 low-resolution sprite display cap is missing');
+if(!photoSource.includes('No exact high-resolution photo is assigned here yet'))throw new Error('V13 explicit no-filler fallback is missing');
 const spriteBytes=fs.statSync('assets/photo-sprite-v3.jpg').size;if(spriteBytes<300000)throw new Error(`Verified photo sprite looks truncated: ${spriteBytes} bytes`);
 for(const f of required.filter(x=>x.endsWith('.svg')))if(fs.statSync(f).size<500)throw new Error(`Reference SVG looks incomplete: ${f}`);
-const index=fs.readFileSync('index.html','utf8');for(const token of ['<title>Pi Hub • V11</title>','<strong>Pi Hub</strong>','<div class="top-title">Pi Hub</div>','manifest.json?v=12.0.0'])if(!index.includes(token))throw new Error(`Missing Pi Hub shell token ${token}`);
+const index=fs.readFileSync('index.html','utf8');for(const token of ['<strong>Pi Hub</strong>','<div class="top-title">Pi Hub</div>'])if(!index.includes(token))throw new Error(`Missing Pi Hub shell token ${token}`);
 const manifest=JSON.parse(fs.readFileSync('manifest.json','utf8'));if(manifest.name!=='Pi Hub'||manifest.short_name!=='Pi Hub')throw new Error('PWA manifest is not branded Pi Hub');
-const sw=fs.readFileSync('sw.js','utf8');if(!sw.includes("pi-hub-course-v12")||!sw.includes('photo-sprite-v3.jpg?v=11.0.0')||!sw.includes('imager-download.svg?v=11.0.0'))throw new Error('Service worker is not Pi Hub V12 cache-aware');
-console.log(`COURSE_VALIDATION_OK brand=PiHub courses=${courses.length} phases=${phases} visualPhases=${visualPhases} uniquePhotoCells=${unique.size} spriteRefs=${spriteRefs} scalableRefs=${scalableRefs} spriteBytes=${spriteBytes} prerequisite=8 cache=v12`);
+const sw=fs.readFileSync('sw.js','utf8');if(!sw.includes("pi-hub-course-v13")||!sw.includes('photo-sprite-v3.jpg?v=11.0.0')||!sw.includes('imager-download.svg?v=11.0.0'))throw new Error('Service worker is not Pi Hub V13 cache-aware');
+console.log(`COURSE_VALIDATION_OK brand=PiHub courses=${courses.length} phases=${phases} visualPhases=${visualPhases} uniquePhotoCells=${unique.size} spriteRefs=${spriteRefs} scalableRefs=${scalableRefs} guides=${guides} spriteBytes=${spriteBytes} prerequisite=8 cache=v13 audit=${audit.version}`);

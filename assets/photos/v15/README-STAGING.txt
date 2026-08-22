@@ -1,0 +1,1 @@
+Binary WebP files will be attached by blob SHA in the final atomic V15 tree. Do not reference .b64 files.

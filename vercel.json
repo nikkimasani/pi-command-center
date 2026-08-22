@@ -1,11 +1,16 @@
 {
   "outputDirectory": ".",
   "buildCommand": "node validate-course.js",
+  "rewrites": [
+    {"source":"/","destination":"/index-v8.html"}
+  ],
   "headers": [
     {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
+    {"source":"/index-v8.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/course-v2.html","headers":[{"key":"Cache-Control","value":"no-store, max-age=0"}]},
     {"source":"/course-v2-data.js","headers":[{"key":"Cache-Control","value":"no-cache, max-age=0"}]},
+    {"source":"/course-v2-fixes.js","headers":[{"key":"Cache-Control","value":"no-cache, max-age=0"}]},
     {"source":"/course-v4-enhancements.js","headers":[{"key":"Cache-Control","value":"no-cache, max-age=0"}]},
     {"source":"/course-v2.js","headers":[{"key":"Cache-Control","value":"no-cache, max-age=0"}]},
     {"source":"/course-v2.css","headers":[{"key":"Cache-Control","value":"no-cache, max-age=0"}]},

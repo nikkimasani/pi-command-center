@@ -47,15 +47,9 @@ function physicalKey(course,phase){const t=String(phase.title||'');if(/lay out, 
 for(const course of (window.PI_COURSES_V2||[])){
  course.phases.forEach((phase,i)=>{
   const v=phase.visual||(phase.visual={});v.photo=null;v.photos=[];
-  if(course.id==='pi-setup'){
-    const primary=SETUP[i]||SETUP[SETUP.length-1],extra=[];
-    if(i===0)extra.push(REF('/assets/pi5-port-map-reference.jpg?v=11.0.0','Original Pi 5 photo reference','Secondary hardware photo. Use the scalable port map above for labels.','Photo reference'));
-    if(i===3)extra.push(REF('/assets/setup/imager-ssh-generated.jpg?v=11.0.0','Imager SSH screenshot reference','Secondary screenshot showing the Imager customization/SSH area.','Screenshot reference'));
-    if(i===5)extra.push(REF('/assets/boot-screen.jpg?v=11.0.0','First-boot screenshot reference','Secondary boot reference. Use the scalable checklist above for the current workflow.','Screenshot reference'));
-    v.photos=[primary,...extra];return;
-  }
+  if(course.id==='pi-setup'){v.photos=[SETUP[i]||SETUP[SETUP.length-1]];return;}
   const sw=softwareReference(course,phase);if(sw){v.photos=[sw];return;}
-  if(/dsi|ribbon|mipi/i.test(phase.title||'')){v.photos=[REF('/assets/reference/dsi-ribbon.svg?v=11.0.0','Exact DSI / MIPI reference','Power off first. Open the latch evenly, align the contacts, insert straight and close evenly.'),REF('/assets/smart-mirror/dsi-align.jpg?v=11.0.0','DSI alignment photo','Match ribbon orientation before insertion.','Photo reference'),REF('/assets/smart-mirror/dsi-seated.jpg?v=11.0.0','DSI fully seated photo','Ribbon inserted evenly with the latch closed.','Photo reference')];return;}
+  if(/dsi|ribbon|mipi/i.test(phase.title||'')){v.photos=[REF('/assets/reference/dsi-ribbon.svg?v=11.0.0','Exact DSI / MIPI reference','Power off first. Open the latch evenly, align the contacts, insert straight and close evenly.')];return;}
   const k=physicalKey(course,phase);if(k&&INDEX[k]!=null)v.photos=[PHOTO(k,phase)];
  });
 }
@@ -68,5 +62,5 @@ const style=document.createElement('style');style.id='photo-v11-style';style.tex
 `;document.head.appendChild(style);
 function process(root=document){root.querySelectorAll?.('.visual-frame img[src*="photo-sprite-v3.jpg#piPhoto="]').forEach(img=>{if(img.dataset.v11)return;img.dataset.v11='1';let key='';try{key=decodeURIComponent(new URL(img.src).hash.replace(/^#piPhoto=/,''))}catch(_){return}const idx=INDEX[key];if(idx==null)return;const col=idx%5,row=Math.floor(idx/5);const crop=document.createElement('div');crop.className='photo-sprite-v11-crop';crop.setAttribute('role','img');crop.setAttribute('aria-label',img.alt||'Photorealistic build reference');crop.dataset.photoAsset=key;crop.style.backgroundPosition=`${col*25}% ${row*(100/9)}%`;const frame=img.closest('.visual-frame');if(frame)frame.classList.add('has-v11-sprite');img.replaceWith(crop)})}
 process();new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)process(n)}).observe(document.documentElement,{subtree:true,childList:true});
-window.PI_PHOTOS_V11={version:'11.0.0',assets:ORDER.length,process};
+window.PI_PHOTOS_V11={version:'11.0.1',assets:ORDER.length,process};
 })();

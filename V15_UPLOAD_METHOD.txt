@@ -1,0 +1,1 @@
+Binary assets are uploaded as full WebP Git blobs and then attached to the branch tree. This avoids the previous contents-API truncation path.

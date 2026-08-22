@@ -1,0 +1,1 @@
+V15 high-resolution assets. Individual 1672x941 WebP files are mapped by exact course phase. No sprite use.

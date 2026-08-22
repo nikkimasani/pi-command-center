@@ -15,6 +15,7 @@ const MAP={
 'photo-frame':['photo_1','shared_05','shared_12','photo_3','photo_3','shared_12','photo_3','shared_12','photo_2'],
 'magic-frame':['magic_1','shared_05','magic_4','magic_3','magic_4','magic_4','magic_2','magic_4','magic_1']
 };
+const FALLBACK={'smart-mirror':'smart_4','dashboard':'dashboard_4','ai-terminal':'ai_4','cyberdeck':'cyber_4','home-panel':'home_4','electronics-lab':'electronics_4','pomodoro':'pomodoro_4','glance':'glance_4','photo-frame':'photo_3','magic-frame':'magic_4'};
 const makePhoto=(key,phase,label='Photorealistic step reference')=>({label,src:`/assets/photo-sprite-v3.jpg#piPhoto=${encodeURIComponent(key)}`,caption:`Visual reference for “${phase.title}”. Follow the written instructions for exact orientation, safety, and commands.`});
 for(const course of (window.PI_COURSES_V2||[])){
  course.phases.forEach((phase,i)=>{
@@ -27,12 +28,12 @@ for(const course of (window.PI_COURSES_V2||[])){
    if(i===0){v.photos=[{label:'Exact Raspberry Pi 5 port map',src:'/assets/reference/pi5-board.svg?v=10.0.1',caption:'Use this sharp Pi 5 reference to identify power, micro-HDMI, USB, GPIO, MIPI and microSD locations.'}];return}
    if(i===2||i===3||i===4){v.photos=[{label:'Exact Raspberry Pi Imager workflow',src:'/assets/reference/imager-flow.svg?v=10.0.1',caption:'Use this sharp workflow for device, OS, storage and customization selections.'}];return}
    const setupKeys=['shared_05','shared_05','dashboard_2','dashboard_2','shared_05','shared_06','detail_12','detail_12'];
-   const k=setupKeys[i];if(k)v.photos=[makePhoto(k,phase)];return;
+   const k=setupKeys[i]||'shared_05';v.photos=[makePhoto(k,phase)];return;
   }
   if(/dsi|ribbon|mipi/i.test(phase.title||'')){
    v.photos=[makePhoto('dsi_5',phase,'DSI close-up'),{label:'Exact DSI safety reference',src:'/assets/reference/dsi-ribbon.svg?v=10.0.1',caption:'Use this exact DSI/MIPI reference for latch and contact orientation.'}];return;
   }
-  const keys=MAP[course.id]; const k=keys&&keys[i];
+  const keys=MAP[course.id]; const k=(keys&&keys[i])||FALLBACK[course.id];
   if(k&&INDEX[k]!=null)v.photos=[makePhoto(k,phase),...exact]; else if(exact.length)v.photos=exact;
  });
 }
@@ -44,5 +45,5 @@ const style=document.createElement('style');style.id='photo-v10-style';style.tex
 `;document.head.appendChild(style);
 function process(root=document){root.querySelectorAll?.('.visual-frame img[src*="photo-sprite-v3.jpg#piPhoto="]').forEach(img=>{if(img.dataset.v10)return;img.dataset.v10='1';let key='';try{key=decodeURIComponent(new URL(img.src).hash.replace(/^#piPhoto=/,''))}catch(_){return}const idx=INDEX[key];if(idx==null)return;const col=idx%5,row=Math.floor(idx/5);const crop=document.createElement('div');crop.className='photo-sprite-v10-crop';crop.setAttribute('role','img');crop.setAttribute('aria-label',img.alt||'Photorealistic step reference');crop.dataset.photoAsset=key;crop.style.backgroundPosition=`${col*25}% ${row*(100/9)}%`;img.replaceWith(crop)})}
 process();new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)process(n)}).observe(document.documentElement,{subtree:true,childList:true});
-window.PI_PHOTOS_V10={version:'10.0.1',assets:ORDER.length,process};
+window.PI_PHOTOS_V10={version:'10.0.2',assets:ORDER.length,process};
 })();

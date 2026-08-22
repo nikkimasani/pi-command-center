@@ -1,76 +1,96 @@
 (()=>{
 'use strict';
-if(window.PI_PHOTOS_V13)return;
-const ORDER=['smart_1','smart_2','smart_3','smart_4','dashboard_1','dashboard_2','dashboard_3','dashboard_4','ai_1','ai_2','ai_3','ai_4','cyber_1','cyber_2','cyber_3','cyber_4','home_1','home_2','home_3','home_4','electronics_1','electronics_2','electronics_3','electronics_4','pomodoro_1','pomodoro_2','pomodoro_3','pomodoro_4','glance_1','glance_2','glance_3','glance_4','photo_1','photo_2','photo_3','magic_1','magic_2','magic_3','magic_4','shared_05','shared_06','shared_08','shared_09','shared_10','shared_11','shared_12','detail_06','detail_09','detail_12','dsi_5'];
-const INDEX=Object.fromEntries(ORDER.map((k,i)=>[k,i]));
+if(window.PI_PHOTOS_V14)return;
 const REF=(src,label,caption,kind='Exact reference')=>({src,label,caption,kind});
-const PHOTO=(key,phase)=>({label:'Photorealistic build reference',kind:'Photorealistic reference',src:`/assets/photo-sprite-v3.jpg#piPhoto=${encodeURIComponent(key)}`,caption:`Build-state reference for “${phase.title}”. Use the written instructions for exact orientation and safety.`});
 const SETUP=[
- REF('/assets/reference/pi5-board.svg?v=11.0.0','Raspberry Pi 5 port map','Identify USB-C power, micro-HDMI, USB, GPIO, MIPI and the underside microSD slot.'),
- REF('/assets/reference/imager-download.svg?v=11.0.0','Raspberry Pi Imager download','Use the official Raspberry Pi software page, install Imager, then open it before choosing storage.'),
- REF('/assets/reference/imager-flow.svg?v=11.0.0','Raspberry Pi Imager workflow','Choose Raspberry Pi 5, Raspberry Pi OS 64-bit Desktop, and only the intended microSD card.'),
- REF('/assets/reference/imager-customize.svg?v=11.0.0','Imager OS customization','Configure hostname, username, Wi-Fi, locale and SSH before writing the card.'),
- REF('/assets/reference/imager-write.svg?v=11.0.0','Write, verify and eject','Write the OS, wait for verification, eject cleanly, then insert the card only while the Pi is powered off.'),
- REF('/assets/reference/first-boot.svg?v=11.0.0','Raspberry Pi OS first boot','Reach the desktop, test input, connect Wi-Fi, and confirm the Pi is stable before continuing.'),
- REF('/assets/reference/software-tools.svg?v=11.0.0','Common Raspberry Pi software tools','Update Raspberry Pi OS and install Git, curl, Python, pip/venv and Chromium.'),
- REF('/assets/reference/health-check.svg?v=11.0.0','Final Pi health check','Verify IP, temperature, storage, SSH, clean shutdown and a true cold boot.')
+ REF('/assets/reference/pi5-board.svg?v=14.0.0','Raspberry Pi 5 port map','Identify USB-C power, micro-HDMI, USB, GPIO, MIPI and the underside microSD slot.'),
+ REF('/assets/reference/imager-download.svg?v=14.0.0','Raspberry Pi Imager download','Use the official Raspberry Pi software page, install Imager, then open it before choosing storage.'),
+ REF('/assets/reference/imager-flow.svg?v=14.0.0','Raspberry Pi Imager workflow','Choose Raspberry Pi 5, Raspberry Pi OS 64-bit Desktop, and only the intended microSD card.'),
+ REF('/assets/reference/imager-customize.svg?v=14.0.0','Imager OS customization','Configure hostname, username, Wi-Fi, locale and SSH before writing the card.'),
+ REF('/assets/reference/imager-write.svg?v=14.0.0','Write, verify and eject','Write the OS, wait for verification, eject cleanly, then insert the card only while the Pi is powered off.'),
+ REF('/assets/reference/first-boot.svg?v=14.0.0','Raspberry Pi OS first boot','Reach the desktop, test input, connect Wi-Fi, and confirm the Pi is stable before continuing.'),
+ REF('/assets/reference/software-tools.svg?v=14.0.0','Common Raspberry Pi software tools','Update Raspberry Pi OS and install Git, curl, Python, pip/venv and Chromium.'),
+ REF('/assets/reference/health-check.svg?v=14.0.0','Final Pi health check','Verify IP, temperature, storage, SSH, clean shutdown and a true cold boot.')
 ];
-const START={'smart-mirror':'smart_1','dashboard':'dashboard_1','ai-terminal':'ai_1','cyberdeck':'cyber_1','home-panel':'home_1','electronics-lab':'electronics_1','pomodoro':'pomodoro_1','glance':'glance_1','photo-frame':'photo_1','magic-frame':'magic_1'};
-const FINISH={'smart-mirror':'smart_4','dashboard':'dashboard_4','ai-terminal':'ai_4','cyberdeck':'cyber_4','home-panel':'home_4','electronics-lab':'electronics_4','pomodoro':'pomodoro_4','glance':'glance_4','photo-frame':'photo_3','magic-frame':'magic_4'};
-const PROJECT_RULES={
-'smart-mirror':[[/mirror effect/i,'smart_2'],[/dry-fit|frame stack/i,'smart_3'],[/mount the display|black out/i,'smart_3'],[/kiosk|mirror screen/i,'smart_4'],[/close the frame|rear panel/i,'detail_09']],
-'dashboard':[[/wireframe|layout/i,'dashboard_2'],[/widget/i,'dashboard_3'],[/final validation|finished dashboard/i,'dashboard_4']],
-'ai-terminal':[[/keyboard|launcher/i,'ai_2'],[/secure|api key/i,'ai_3'],[/final validation|finished terminal/i,'ai_4']],
-'cyberdeck':[[/mock|layout|mount/i,'cyber_2'],[/airflow|cable|power/i,'cyber_3'],[/final validation|finished cyberdeck/i,'cyber_4']],
-'home-panel':[[/mount|wall/i,'home_2'],[/dashboard interface/i,'home_3'],[/final validation|finished panel/i,'home_4']],
-'electronics-lab':[[/breadboard|led/i,'electronics_2'],[/button|sensor|wire/i,'electronics_3'],[/final validation|sensor test/i,'electronics_4']],
-'pomodoro':[[/timer interface/i,'pomodoro_2'],[/button|led/i,'pomodoro_3'],[/final validation|focus station/i,'pomodoro_4']],
-'glance':[[/screen layout|page layout/i,'glance_2'],[/rotate|night/i,'glance_3'],[/final validation|finished desk/i,'glance_4']],
-'photo-frame':[[/album|photo collection/i,'photo_2'],[/viewer|final validation|finished frame/i,'photo_3']],
-'magic-frame':[[/sleep|wake/i,'magic_2'],[/photo mode/i,'magic_3'],[/final validation|finished magic frame/i,'magic_4']]
-};
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[m]));}
-function makeSoftwareSvg(course,phase){
- const rows=(phase.commands||[]).slice(0,4).map((c,i)=>`<text x="95" y="${235+i*72}" fill="#7ce3b2" font-family="monospace" font-size="18">$ ${esc(c.code).slice(0,86)}</text><text x="95" y="${260+i*72}" fill="#9fb0c5" font-family="Arial" font-size="15">Expected: ${esc(c.result).slice(0,88)}</text>`).join('');
- const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><rect width="1200" height="675" fill="#07101a"/><rect x="30" y="30" width="1140" height="615" rx="28" fill="#0d1824" stroke="#31445c" stroke-width="3"/><text x="70" y="92" fill="#c4b5fd" font-family="Arial" font-size="25" font-weight="700">${esc(course.title)} • Software setup</text><text x="70" y="132" fill="#f8fafc" font-family="Arial" font-size="30" font-weight="700">${esc(phase.title).slice(0,68)}</text><rect x="70" y="165" width="1060" height="390" rx="20" fill="#05090e" stroke="#526981" stroke-width="3"/>${rows}<text x="70" y="610" fill="#d9e4ef" font-family="Arial" font-size="19">Run only the commands shown in this phase. Stop and fix any error before continuing.</text></svg>`;
- return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+function dataSvg(svg){return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);}
+function actionRows(phase){
+ return (phase.actions||[]).slice(0,4).map((a,i)=>{
+  const title=esc(a.title||a.text||`Step ${i+1}`).slice(0,40);
+  const detail=esc(a.detail||a.description||'Follow the written step below.').slice(0,70);
+  return {title,detail};
+ });
 }
-function makeGuideSvg(course,phase){
- const actions=(phase.actions||[]).slice(0,4);const cards=actions.map((a,i)=>{const x=70+(i%2)*535,y=250+Math.floor(i/2)*155;return `<rect x="${x}" y="${y}" width="500" height="125" rx="18" fill="#111c2a" stroke="#33465d"/><circle cx="${x+42}" cy="${y+40}" r="22" fill="#5b4cc4"/><text x="${x+42}" y="${y+47}" text-anchor="middle" fill="#fff" font-family="Arial" font-size="18" font-weight="700">${i+1}</text><text x="${x+78}" y="${y+38}" fill="#f8fafc" font-family="Arial" font-size="19" font-weight="700">${esc(a.title||a.text||'Step').slice(0,38)}</text><text x="${x+78}" y="${y+69}" fill="#a9b8ca" font-family="Arial" font-size="15">${esc(a.detail||a.description||'Follow the written instruction below.').slice(0,55)}</text>`}).join('');
- const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><rect width="1200" height="675" fill="#07101a"/><rect x="30" y="30" width="1140" height="615" rx="28" fill="#0d1824" stroke="#31445c" stroke-width="3"/><text x="70" y="90" fill="#f59e0b" font-family="Arial" font-size="20" font-weight="700">PHASE-SPECIFIC BUILD GUIDE</text><text x="70" y="136" fill="#f8fafc" font-family="Arial" font-size="31" font-weight="700">${esc(phase.title).slice(0,62)}</text><text x="70" y="180" fill="#9fb0c5" font-family="Arial" font-size="18">${esc(course.title)} • no exact high-resolution photo is assigned to this phase yet</text>${cards}<text x="70" y="620" fill="#d9e4ef" font-family="Arial" font-size="18">This guide is intentionally used instead of stretching or repeating a low-resolution photo.</text></svg>`;
- return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+function makeSoftwareSvg(course,phase){
+ const commands=(phase.commands||[]).slice(0,4);
+ const rows=commands.map((c,i)=>`<text x="94" y="${238+i*72}" fill="#7ce3b2" font-family="ui-monospace,monospace" font-size="18">$ ${esc(c.code).slice(0,90)}</text><text x="94" y="${264+i*72}" fill="#9fb0c5" font-family="Arial,sans-serif" font-size="15">Expected: ${esc(c.result).slice(0,92)}</text>`).join('');
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675">
+ <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101a"/><stop offset="1" stop-color="#111827"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".45"/></filter></defs>
+ <rect width="1200" height="675" fill="url(#bg)"/><rect x="36" y="34" width="1128" height="607" rx="30" fill="#0d1824" stroke="#31445c" stroke-width="3" filter="url(#shadow)"/>
+ <text x="74" y="92" fill="#a78bfa" font-family="Arial,sans-serif" font-size="23" font-weight="700">${esc(course.title)} • software reference</text>
+ <text x="74" y="136" fill="#f8fafc" font-family="Arial,sans-serif" font-size="30" font-weight="700">${esc(phase.title).slice(0,70)}</text>
+ <rect x="72" y="168" width="1056" height="382" rx="22" fill="#04080d" stroke="#526981" stroke-width="3"/>
+ <circle cx="105" cy="197" r="7" fill="#f87171"/><circle cx="129" cy="197" r="7" fill="#fbbf24"/><circle cx="153" cy="197" r="7" fill="#34d399"/>${rows}
+ <text x="74" y="610" fill="#dbe7f3" font-family="Arial,sans-serif" font-size="18">Run the commands in this phase exactly as written. Fix errors before continuing.</text></svg>`;
+ return dataSvg(svg);
+}
+function sceneKind(course,phase){
+ const t=(phase.title||'').toLowerCase();
+ if(/wire|breadboard|gpio|sensor|led|button|circuit|cable|power/.test(t))return 'wiring';
+ if(/mirror|frame|mount|dry-fit|enclosure|panel|rear|stack|close/.test(t))return 'frame';
+ if(/dashboard|screen|display|viewer|photo|timer|kiosk|interface|layout|rotate|night/.test(t))return 'display';
+ if(/cyberdeck|terminal|keyboard|launcher|portable/.test(t))return 'terminal';
+ if(/final|validation|finished|document|test|verify/.test(t))return 'final';
+ if(course.id==='electronics-lab')return 'wiring';
+ if(['smart-mirror','magic-frame','photo-frame'].includes(course.id))return 'frame';
+ if(['dashboard','home-panel','pomodoro','glance'].includes(course.id))return 'display';
+ if(['ai-terminal','cyberdeck'].includes(course.id))return 'terminal';
+ return 'hardware';
+}
+function sceneArt(kind,course){
+ const accent={
+  'smart-mirror':'#a78bfa','dashboard':'#38bdf8','ai-terminal':'#34d399','cyberdeck':'#f59e0b','home-panel':'#22d3ee',
+  'electronics-lab':'#f97316','pomodoro':'#ef4444','glance':'#60a5fa','photo-frame':'#84cc16','magic-frame':'#c084fc'
+ }[course.id]||'#22c55e';
+ const common=`<defs><linearGradient id="desk" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8b5e3c"/><stop offset=".5" stop-color="#6b442b"/><stop offset="1" stop-color="#4a2f22"/></linearGradient><linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#213247"/><stop offset=".45" stop-color="#090f17"/><stop offset="1" stop-color="#17283d"/></linearGradient><filter id="ds"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".45"/></filter><pattern id="grain" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M0 8 C8 2 20 14 32 7M0 24 C10 17 20 30 32 21" fill="none" stroke="#d6a779" stroke-opacity=".12" stroke-width="2"/></pattern></defs>`;
+ const pi=`<g filter="url(#ds)"><rect x="182" y="242" width="250" height="160" rx="18" fill="#16834f" stroke="#67e8a8" stroke-width="4"/><rect x="218" y="278" width="78" height="72" rx="10" fill="#26374c"/><rect x="326" y="268" width="58" height="52" rx="8" fill="#24344a"/><rect x="194" y="254" width="226" height="20" rx="4" fill="#d6b847"/><g fill="#cbd5e1"><rect x="429" y="260" width="30" height="35" rx="4"/><rect x="429" y="310" width="30" height="35" rx="4"/><rect x="429" y="360" width="30" height="28" rx="4"/></g><text x="306" y="385" text-anchor="middle" fill="#d1fae5" font-family="Arial" font-size="18" font-weight="700">Raspberry Pi 5</text></g>`;
+ if(kind==='wiring')return common+`<rect x="0" y="0" width="1200" height="675" fill="url(#desk)"/><rect width="1200" height="675" fill="url(#grain)"/>${pi}<g filter="url(#ds)"><rect x="680" y="235" width="330" height="220" rx="18" fill="#f8fafc"/><g stroke="#cbd5e1" stroke-width="2">${Array.from({length:10},(_,i)=>`<line x1="${705+i*28}" y1="255" x2="${705+i*28}" y2="432"/>`).join('')}</g><g stroke="#fb7185" stroke-width="8" fill="none"><path d="M420 300 C540 225 620 230 720 315"/><path d="M420 340 C560 390 610 350 772 390"/></g><g stroke="#60a5fa" stroke-width="8" fill="none"><path d="M420 370 C590 480 670 405 840 285"/></g><circle cx="860" cy="346" r="16" fill="#ef4444"/><rect x="855" y="362" width="10" height="46" rx="4" fill="#475569"/></g>`;
+ if(kind==='frame')return common+`<rect width="1200" height="675" fill="url(#desk)"/><rect width="1200" height="675" fill="url(#grain)"/><g filter="url(#ds)"><rect x="490" y="136" width="430" height="390" rx="10" fill="#5b3624"/><rect x="530" y="176" width="350" height="310" rx="5" fill="url(#glass)" stroke="#94a3b8" stroke-width="4"/><rect x="590" y="230" width="230" height="160" rx="8" fill="#020617"/><text x="705" y="302" text-anchor="middle" fill="#fff" font-family="Arial" font-size="36" font-weight="700">10:42</text><text x="705" y="338" text-anchor="middle" fill="${accent}" font-family="Arial" font-size="18">72° • Friday</text></g>${pi}<g stroke="#111827" stroke-width="14" fill="none"><path d="M426 332 C475 332 500 350 540 382"/></g>`;
+ if(kind==='display')return common+`<rect width="1200" height="675" fill="url(#desk)"/><rect width="1200" height="675" fill="url(#grain)"/>${pi}<g filter="url(#ds)"><rect x="520" y="145" width="470" height="330" rx="22" fill="#1f2937"/><rect x="548" y="173" width="414" height="272" rx="12" fill="#030712"/><rect x="585" y="210" width="160" height="88" rx="12" fill="#0f172a" stroke="${accent}" stroke-width="3"/><rect x="765" y="210" width="160" height="88" rx="12" fill="#0f172a" stroke="#334155" stroke-width="3"/><rect x="585" y="318" width="340" height="84" rx="12" fill="#0f172a" stroke="#334155" stroke-width="3"/><text x="605" y="248" fill="#f8fafc" font-family="Arial" font-size="24" font-weight="700">10:42</text><text x="605" y="280" fill="${accent}" font-family="Arial" font-size="17">Ready</text></g>`;
+ if(kind==='terminal')return common+`<rect width="1200" height="675" fill="url(#desk)"/><rect width="1200" height="675" fill="url(#grain)"/><g filter="url(#ds)"><rect x="410" y="132" width="590" height="390" rx="24" fill="#1f2937"/><rect x="448" y="166" width="514" height="270" rx="10" fill="#020617"/><text x="478" y="218" fill="#34d399" font-family="monospace" font-size="20">$ pi-hub ready</text><text x="478" y="258" fill="#a7f3d0" font-family="monospace" font-size="18">system: online</text><text x="478" y="294" fill="#a7f3d0" font-family="monospace" font-size="18">network: connected</text><rect x="500" y="462" width="370" height="36" rx="7" fill="#111827"/><g fill="#334155">${Array.from({length:12},(_,i)=>`<rect x="${520+i*27}" y="470" width="20" height="18" rx="3"/>`).join('')}</g></g>${pi}`;
+ if(kind==='final')return common+`<rect width="1200" height="675" fill="url(#desk)"/><rect width="1200" height="675" fill="url(#grain)"/><g filter="url(#ds)"><rect x="400" y="124" width="540" height="420" rx="30" fill="#182231" stroke="${accent}" stroke-width="4"/><rect x="446" y="168" width="448" height="280" rx="14" fill="#030712"/><circle cx="670" cy="500" r="30" fill="#14532d" stroke="#4ade80" stroke-width="4"/><path d="M654 500 l12 12 24-30" fill="none" stroke="#86efac" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+ return common+`<rect width="1200" height="675" fill="url(#desk)"/><rect width="1200" height="675" fill="url(#grain)"/>${pi}<g filter="url(#ds)"><rect x="520" y="190" width="260" height="180" rx="22" fill="#111827"/><rect x="820" y="210" width="150" height="120" rx="18" fill="#d1d5db"/><rect x="530" y="420" width="400" height="30" rx="15" fill="#0f172a"/></g>`;
+}
+function makePhysicalSvg(course,phase){
+ const kind=sceneKind(course,phase), actions=actionRows(phase);
+ const chips=actions.map((a,i)=>`<g><rect x="${70+i*270}" y="555" width="250" height="66" rx="16" fill="#0b1320" stroke="#526981" stroke-width="2"/><circle cx="${99+i*270}" cy="588" r="18" fill="#5b4cc4"/><text x="${99+i*270}" y="594" text-anchor="middle" fill="#fff" font-family="Arial" font-size="15" font-weight="700">${i+1}</text><text x="${128+i*270}" y="582" fill="#f8fafc" font-family="Arial" font-size="14" font-weight="700">${a.title}</text><text x="${128+i*270}" y="604" fill="#9fb0c5" font-family="Arial" font-size="11">${a.detail}</text></g>`).join('');
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675">
+ ${sceneArt(kind,course)}
+ <rect x="38" y="28" width="1124" height="76" rx="22" fill="#07101a" fill-opacity=".88" stroke="#31445c" stroke-width="2"/>
+ <text x="70" y="60" fill="#a78bfa" font-family="Arial,sans-serif" font-size="17" font-weight="700">SCALABLE BUILD RENDER • ${esc(course.title)}</text>
+ <text x="70" y="89" fill="#f8fafc" font-family="Arial,sans-serif" font-size="24" font-weight="700">${esc(phase.title).slice(0,76)}</text>
+ <rect x="48" y="535" width="1104" height="104" rx="22" fill="#07101a" fill-opacity=".91" stroke="#31445c" stroke-width="2"/>${chips}
+ </svg>`;
+ return dataSvg(svg);
 }
 function softwareReference(course,phase){
  const t=String(phase.title||'').toLowerCase();
- if(t.includes('install the common raspberry pi software tools'))return REF('/assets/reference/software-tools.svg?v=11.0.0','Common Raspberry Pi software tools','Use this exact Terminal reference instead of a low-resolution project photo.');
- if(t.includes('install magicmirror'))return REF('/assets/reference/magicmirror-install.svg?v=11.0.0','Official MagicMirror² installation','Clone the official MagicMirrorOrg repository, run the supported installer, copy the sample config, then launch MagicMirror² manually.');
- if(t.includes('prepare raspberry pi os'))return REF('/assets/reference/imager-flow.svg?v=11.0.0','Raspberry Pi OS preparation','Use Raspberry Pi Imager, write and verify the card, complete first boot, update the OS, then reboot.');
+ if(t.includes('install the common raspberry pi software tools'))return REF('/assets/reference/software-tools.svg?v=14.0.0','Common Raspberry Pi software tools','Use this exact Terminal reference for the shared software foundation.','Software reference');
+ if(t.includes('install magicmirror'))return REF('/assets/reference/magicmirror-install.svg?v=14.0.0','Official MagicMirror² installation','Clone the official MagicMirrorOrg repository, run the supported installer, copy the sample config, then launch MagicMirror² manually.','Software reference');
+ if(t.includes('prepare raspberry pi os'))return REF('/assets/reference/imager-flow.svg?v=14.0.0','Raspberry Pi OS preparation','Use Raspberry Pi Imager, write and verify the card, complete first boot, update the OS, then reboot.','Exact reference');
  if(/software|install|terminal|server|kiosk|home assistant|gpio tools|companion/i.test(t)&&(phase.commands||[]).length)return REF(makeSoftwareSvg(course,phase),`${course.title} software reference`,'Scalable command reference generated from this phase’s actual commands and expected results.','Software reference');
  return null;
 }
-function physicalKey(course,phase){
- const t=String(phase.title||'');
- if(/lay out, identify, and inspect/i.test(t))return START[course.id]||null;
- if(/complete final validation|document the build/i.test(t))return FINISH[course.id]||null;
- for(const [re,key] of (PROJECT_RULES[course.id]||[]))if(re.test(t))return key;
- return null;
-}
-const audit={version:'13.0.0',total:0,exactPhotos:0,scalableRefs:0,generatedGuides:0,photoKeys:{},needsHighRes:[]};
-const keyUse={};
+const audit={version:'14.0.0',total:0,exactReferences:0,softwareReferences:0,renderedReferences:0,bitmapReferences:0,spriteReferences:0};
 for(const course of (window.PI_COURSES_V2||[])){
  course.phases.forEach((phase,i)=>{
   audit.total++;const v=phase.visual||(phase.visual={});v.photo=null;v.photos=[];
-  if(course.id==='pi-setup'){v.photos=[SETUP[i]||SETUP[SETUP.length-1]];audit.scalableRefs++;return;}
-  const sw=softwareReference(course,phase);if(sw){v.photos=[sw];audit.scalableRefs++;return;}
-  if(/dsi|ribbon|mipi/i.test(phase.title||'')){v.photos=[REF('/assets/reference/dsi-ribbon.svg?v=11.0.0','Exact DSI / MIPI reference','Power off first. Open the latch evenly, align the contacts, insert straight and close evenly.')];audit.scalableRefs++;return;}
-  const k=physicalKey(course,phase);
-  if(k&&INDEX[k]!=null&&(keyUse[k]||0)<2){keyUse[k]=(keyUse[k]||0)+1;v.photos=[PHOTO(k,phase)];audit.exactPhotos++;audit.photoKeys[k]=(audit.photoKeys[k]||0)+1;return;}
-  v.photos=[REF(makeGuideSvg(course,phase),'Phase-specific build guide','No exact high-resolution photo is assigned here yet, so Pi Hub uses a sharp guide instead of a repeated or pixelated image.','Instructional guide')];audit.generatedGuides++;audit.needsHighRes.push({course:course.title,phase:phase.title});
+  if(course.id==='pi-setup'){v.photos=[SETUP[i]||SETUP[SETUP.length-1]];audit.exactReferences++;return;}
+  const sw=softwareReference(course,phase);if(sw){v.photos=[sw];audit.softwareReferences++;return;}
+  if(/dsi|ribbon|mipi/i.test(phase.title||'')){v.photos=[REF('/assets/reference/dsi-ribbon.svg?v=14.0.0','Exact DSI / MIPI reference','Power off first. Open the latch evenly, align the contacts, insert straight and close evenly.')];audit.exactReferences++;return;}
+  v.photos=[REF(makePhysicalSvg(course,phase),'Scalable build render','Phase-specific rendered reference generated from this project and this phase. It stays sharp at any screen size and is never a reused low-resolution photo.','Scalable rendered reference')];audit.renderedReferences++;
  });
 }
-audit.duplicates=Object.entries(audit.photoKeys).filter(([,n])=>n>2).map(([key,count])=>({key,count}));
-const style=document.createElement('style');style.id='photo-v13-style';style.textContent=`.photo-sprite-v11-crop{width:min(100%,220px);aspect-ratio:16/9;background-image:url('/assets/photo-sprite-v3.jpg?v=11.0.0');background-size:500% 1000%;background-repeat:no-repeat;background-color:#05080d;display:block;margin:18px auto;border-radius:12px}.visual-frame.has-v11-sprite{background:#05080d}.visual-frame.has-v11-sprite .visual-caption{margin-top:0}.visual-frame img[src*="photo-sprite-v3.jpg#piPhoto="]{opacity:0;position:absolute;pointer-events:none;width:1px!important;height:1px!important}.visual-frame img:not([src*="photo-sprite-v3.jpg"]){max-width:100%;height:auto;object-fit:contain}@media(max-width:760px){.photo-sprite-v11-crop{width:min(100%,200px)}.visual-frame{overflow:hidden}}`;document.head.appendChild(style);
-function process(root=document){root.querySelectorAll?.('.visual-frame img[src*="photo-sprite-v3.jpg#piPhoto="]').forEach(img=>{if(img.dataset.v13)return;img.dataset.v13='1';let key='';try{key=decodeURIComponent(new URL(img.src).hash.replace(/^#piPhoto=/,''))}catch(_){return}const idx=INDEX[key];if(idx==null)return;const col=idx%5,row=Math.floor(idx/5);const crop=document.createElement('div');crop.className='photo-sprite-v11-crop';crop.setAttribute('role','img');crop.setAttribute('aria-label',img.alt||'Photorealistic build reference');crop.dataset.photoAsset=key;crop.style.backgroundPosition=`${col*25}% ${row*(100/9)}%`;const frame=img.closest('.visual-frame');if(frame)frame.classList.add('has-v11-sprite');img.replaceWith(crop)})}
-process();new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1)process(n)}).observe(document.documentElement,{subtree:true,childList:true});
-window.PI_VISUAL_AUDIT_V13=audit;window.PI_PHOTOS_V13={version:'13.0.0',assets:ORDER.length,process,audit};
+const style=document.createElement('style');style.id='photo-v14-style';style.textContent=`.visual-frame{background:#05080d;overflow:hidden}.visual-frame img{display:block;width:100%;max-width:100%;height:auto;max-height:620px;object-fit:contain;image-rendering:auto}.visual-frame .visual-caption{margin-top:0}.visual-badge{max-width:calc(100% - 28px)}@media(max-width:760px){.visual-frame img{max-height:52vh}.visual-frame{width:100%;min-width:0}}`;document.head.appendChild(style);
+window.PI_VISUAL_AUDIT_V14=audit;window.PI_PHOTOS_V14={version:'14.0.0',audit};
 })();

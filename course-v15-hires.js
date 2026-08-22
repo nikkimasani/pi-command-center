@@ -1,8 +1,5 @@
 (()=>{
 'use strict';
-const courses=window.PI_COURSES_V2||[];
-const smart=courses.find(c=>c.id==='smart-mirror');
-if(!smart){window.PI_PHOTOS_V15={version:'15.0.0',mapped:0};return;}
 const MAP={
   'Lay out, identify, and inspect every part':{
     src:'/assets/photos/v15/smart-mirror/smart-mirror-kit.svg?v=15.0.0',
@@ -25,15 +22,25 @@ const MAP={
     caption:'Close-up DSI ribbon connection reference showing safe alignment, seating, and cable routing.'
   }
 };
-let mapped=0;
-smart.phases.forEach(phase=>{
-  const ref=MAP[phase.title];
-  if(!ref)return;
-  phase.visual=phase.visual||{};
-  phase.visual.photo=ref.src;
-  phase.visual.photos=[{label:ref.label,src:ref.src,caption:ref.caption}];
-  phase.visual.caption=ref.caption;
-  mapped++;
-});
-window.PI_PHOTOS_V15={version:'15.0.0',mapped,expected:Object.keys(MAP).length};
+function apply(){
+  if(!window.PI_PHOTOS_V14)return false;
+  const courses=window.PI_COURSES_V2||[];
+  const smart=courses.find(c=>c.id==='smart-mirror');
+  if(!smart)return false;
+  let mapped=0;
+  smart.phases.forEach(phase=>{
+    const ref=MAP[phase.title];
+    if(!ref)return;
+    phase.visual=phase.visual||{};
+    phase.visual.photo=ref.src;
+    phase.visual.photos=[{label:ref.label,src:ref.src,caption:ref.caption}];
+    phase.visual.caption=ref.caption;
+    mapped++;
+  });
+  window.PI_PHOTOS_V15={version:'15.0.0',mapped,expected:Object.keys(MAP).length};
+  return mapped===Object.keys(MAP).length;
+}
+let tries=0;
+const timer=setInterval(()=>{tries++;if(apply()||tries>100)clearInterval(timer)},25);
+window.addEventListener('DOMContentLoaded',()=>setTimeout(apply,0),{once:true});
 })();

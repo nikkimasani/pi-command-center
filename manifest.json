@@ -1,7 +1,7 @@
 {
-  "name": "Pi Command Center",
-  "short_name": "Pi Command",
-  "description": "Visual Raspberry Pi build studio with step-by-step project guides",
+  "name": "Pi Hub",
+  "short_name": "Pi Hub",
+  "description": "Visual Raspberry Pi build hub with step-by-step project guides",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#070b12",

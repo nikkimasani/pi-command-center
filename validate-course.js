@@ -1,28 +1,30 @@
-const fs=require('fs');const vm=require('vm');
-const required=['index.html','course-v2.html','course-v2.css','course-v2-data.js','course-v2-fixes.js','course-v2.js','sw.js'];for(const f of required){if(!fs.existsSync(f))throw new Error(`Missing ${f}`)}
-new vm.Script(fs.readFileSync('course-v2.js','utf8'),{filename:'course-v2.js'});
-new vm.Script(fs.readFileSync('course-v2-fixes.js','utf8'),{filename:'course-v2-fixes.js'});
-const context={window:{}};vm.createContext(context);new vm.Script(fs.readFileSync('course-v2-data.js','utf8'),{filename:'course-v2-data.js'}).runInContext(context);new vm.Script(fs.readFileSync('course-v2-fixes.js','utf8'),{filename:'course-v2-fixes.js'}).runInContext(context);
-const courses=context.window.PI_COURSES_V2;const expected=['smart-mirror','dashboard','ai-terminal','cyberdeck','home-panel','electronics-lab','pomodoro','glance','photo-frame','magic-frame'];
-if(!Array.isArray(courses)||courses.length!==10)throw new Error(`Expected 10 courses, found ${courses?.length}`);
-for(const id of expected){if(!courses.some(c=>c.id===id))throw new Error(`Missing course ${id}`)}
-let phases=0,visuals=0,actions=0;
-for(const c of courses){
- if(!c.title||!c.goal||!Array.isArray(c.materials)||c.materials.length<4)throw new Error(`Incomplete course metadata: ${c.id}`);
- if(!Array.isArray(c.safety)||!c.safety.length)throw new Error(`Missing safety guidance: ${c.id}`);
- if(!Array.isArray(c.phases)||c.phases.length<8)throw new Error(`Course ${c.id} has only ${c.phases?.length||0} phases`);
- for(const [i,p] of c.phases.entries()){
-  phases++;
-  if(!p.title||!p.why||!p.time)throw new Error(`Incomplete phase metadata: ${c.id} #${i+1}`);
-  if(!p.visual||!p.visual.scene)throw new Error(`Missing visual: ${c.id} #${i+1}`);visuals++;
-  if(!Array.isArray(p.actions)||p.actions.length<4)throw new Error(`Too few actions: ${c.id} #${i+1}`);
-  for(const a of p.actions){if(!a.title||!a.detail)throw new Error(`Incomplete action: ${c.id} #${i+1}`);actions++}
-  if(!Array.isArray(p.success)||!p.success.length)throw new Error(`Missing success gate: ${c.id} #${i+1}`);
-  if(typeof p.warning!=='string')throw new Error(`Warning must be text: ${c.id} #${i+1}`);
-  if(!Array.isArray(p.trouble))throw new Error(`Troubleshooting must be a list: ${c.id} #${i+1}`);
-  if(!Array.isArray(p.commands))throw new Error(`Commands must be a list: ${c.id} #${i+1}`);
- }
-}
-const html=fs.readFileSync('index.html','utf8');for(const marker of ['COURSE ENGINE V2.0.0','course-v2-data.js?v=2.0.0','course-v2-fixes.js?v=2.0.1','course-v2.js?v=2.0.0','course-v2.css?v=2.0.0']){if(!html.includes(marker))throw new Error(`index.html missing ${marker}`)}
-if(!fs.readFileSync('sw.js','utf8').includes('pi-command-course-v2'))throw new Error('Service worker cache version is not V2');
-console.log(`COURSE_VALIDATION_OK courses=${courses.length} phases=${phases} visuals=${visuals} actions=${actions} version=${context.window.PI_COURSES_V2_VERSION} patch=${context.window.PI_COURSES_V2_PATCH}`);
+const fs=require('fs'),vm=require('vm');
+const required=['index.html','course-v2.css','course-v4.css','course-v2-data.js','course-v2-fixes.js','course-v4-enhancements.js','course-v9-prerequisite.js','course-v10-photos.js','course-v2.js','sw.js','manifest.json','assets/reference/pi5-board.svg','assets/reference/dsi-ribbon.svg','assets/reference/imager-flow.svg','assets/reference/imager-download.svg','assets/reference/imager-customize.svg','assets/reference/imager-write.svg','assets/reference/first-boot.svg','assets/reference/software-tools.svg','assets/reference/health-check.svg','assets/reference/magicmirror-install.svg'];
+for(const f of required)if(!fs.existsSync(f))throw new Error(`Missing ${f}`);
+for(const f of ['course-v2.js','course-v2-fixes.js','course-v4-enhancements.js','course-v9-prerequisite.js','course-v10-photos.js'])new vm.Script(fs.readFileSync(f,'utf8'),{filename:f});
+const dummyEl=()=>({style:{},dataset:{},setAttribute(){},replaceWith(){},appendChild(){},closest(){return null},querySelectorAll(){return[]}});
+const document={head:{appendChild(){}},documentElement:{},createElement:dummyEl,querySelectorAll(){return[]}};
+const context={window:{},console,document,URL,requestAnimationFrame:()=>{},MutationObserver:function(){this.observe=()=>{}},setTimeout,clearTimeout,encodeURIComponent};
+vm.createContext(context);
+for(const f of ['course-v2-data.js','course-v2-fixes.js','course-v4-enhancements.js','course-v9-prerequisite.js','course-v10-photos.js'])new vm.Script(fs.readFileSync(f,'utf8'),{filename:f}).runInContext(context);
+const courses=context.window.PI_COURSES_V2;if(!Array.isArray(courses)||courses.length!==11)throw new Error(`Expected 11 courses including prerequisite, got ${courses?.length}`);
+if(courses[0]?.id!=='pi-setup'||courses[0].phases.length!==8)throw new Error('START HERE prerequisite must be first with 8 phases');
+let phases=0,visualPhases=0,svgRefs=0,bitmapRefs=0,rendered=0,software=0;
+for(const c of courses){for(const p of c.phases){phases++;const photos=p.visual?.photos||[];if(!photos.length)throw new Error(`Missing V14 visual: ${c.id} / ${p.title}`);visualPhases++;for(const x of photos){const src=x.src||'';if(/photo-sprite-v3/i.test(src))throw new Error(`Sprite reference survived V14: ${c.id} / ${p.title}`);if(/^data:image\/svg\+xml/i.test(src)||/\.svg(?:\?|$)/i.test(src))svgRefs++;else if(/^data:image\//i.test(src)||/\.(?:jpg|jpeg|png|webp)(?:\?|#|$)/i.test(src))bitmapRefs++;if((x.kind||'').toLowerCase().includes('rendered'))rendered++;if((x.kind||'').toLowerCase().includes('software'))software++;}}}
+if(phases!==118)throw new Error(`Expected 118 phases, got ${phases}`);
+if(visualPhases!==phases)throw new Error(`Visual coverage mismatch ${visualPhases}/${phases}`);
+if(bitmapRefs!==0)throw new Error(`V14 must have zero raster phase references, got ${bitmapRefs}`);
+if(svgRefs!==phases)throw new Error(`Every V14 phase should use a scalable visual, got ${svgRefs}/${phases}`);
+if(rendered<40)throw new Error(`Expected broad phase-specific rendered coverage, got ${rendered}`);
+const audit=context.window.PI_VISUAL_AUDIT_V14;if(!audit||audit.version!=='14.0.0')throw new Error('V14 visual audit metadata missing');
+if(audit.total!==phases)throw new Error(`V14 audit total mismatch ${audit.total} vs ${phases}`);
+if(audit.bitmapReferences!==0||audit.spriteReferences!==0)throw new Error('V14 audit reports bitmap/sprite references');
+const photoSource=fs.readFileSync('course-v10-photos.js','utf8');
+if(/photo-sprite-v3/i.test(photoSource))throw new Error('V14 mapper still contains photo-sprite-v3');
+if(!photoSource.includes('SCALABLE BUILD RENDER'))throw new Error('V14 scalable physical render system missing');
+const sw=fs.readFileSync('sw.js','utf8');if(!sw.includes("pi-path-course-v16"))throw new Error('Service worker is not Pi Path V16');
+if(/photo-sprite-v3/i.test(sw))throw new Error('V14 service worker still caches photo sprite');
+for(const f of required.filter(x=>x.endsWith('.svg')))if(fs.statSync(f).size<500)throw new Error(`Reference SVG looks incomplete: ${f}`);
+const index=fs.readFileSync('index.html','utf8');for(const token of ['<strong>Pi Path</strong>','/course-v2.js?v=17.0.0'])if(!index.includes(token))throw new Error(`Missing Pi Path shell token ${token}`);
+const manifest=JSON.parse(fs.readFileSync('manifest.json','utf8'));if(manifest.name!=='Pi Hub'||manifest.short_name!=='Pi Hub')throw new Error('PWA manifest is not branded Pi Hub');
+console.log(`COURSE_VALIDATION_OK brand=PiHub courses=${courses.length} phases=${phases} visualPhases=${visualPhases} scalable=${svgRefs} rendered=${rendered} software=${software} bitmapRefs=${bitmapRefs} spriteRefs=0 prerequisite=8 cache=v14 audit=${audit.version}`);

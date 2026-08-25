@@ -42,3 +42,91 @@ function closeMenu(){$('#sidebar').classList.remove('open');$('#overlay').classL
 $('#menuBtn').onclick=openMenu;$('#overlay').onclick=closeMenu;$$('.nav button').forEach(b=>b.onclick=()=>{const v=b.dataset.view;if(v==='home')renderHome();if(v==='inventory')renderInventory();if(v==='progress')renderProgress();if(v==='help')renderHelp();nav(v)});$('#search').oninput=e=>{state.query=e.target.value;renderHome()};$('#difficulty').onchange=e=>{state.difficulty=e.target.value;renderHome()};$('#resetProgress').onclick=()=>{if(confirm('Reset all saved course checks, verified phases, and notes on this device?')){localStorage.removeItem('piCourseV2Progress');localStorage.removeItem('piCourseV2Notes');location.reload()}};
 renderHome();renderInventory();renderProgress();renderHelp();nav('home');
 })();
+
+/* V16 course experience layer: keeps the existing course engine and upgrades its presentation. */
+(()=>{
+  const css=document.createElement('link');
+  css.rel='stylesheet';css.href='/course-v16.css?v=16.0.0';document.head.appendChild(css);
+  document.title='Pi Path • Interactive Raspberry Pi Courses';
+
+  /* Real lesson photography is deliberately assigned only where it supports the action. */
+  const photo=(src,label,caption)=>({src,label,caption,kind:'Lesson photo'});
+  const setLessonPhotos=(courseId,index,photos)=>{
+    const course=(window.PI_COURSES_V2||[]).find(item=>item.id===courseId);
+    if(course?.phases[index])course.phases[index].visual={...course.phases[index].visual,photos};
+  };
+  setLessonPhotos('pi-setup',0,[
+    photo('/assets/lesson-photos/pi5-foundation.png','Pi 5 on the bench','Illustrative setup photo: identify the Pi, microSD card, display cable, and power cable before connecting anything.'),
+    photo('/assets/pi5-port-map-reference.jpg','Port map','Use the port map to verify the exact connector before power is applied.')
+  ]);
+  setLessonPhotos('pi-setup',1,[photo('/assets/reference/imager-download.svg?v=16.0.0','Download Raspberry Pi Imager','A crisp reference diagram for finding and installing the official Raspberry Pi Imager.')]);
+  setLessonPhotos('pi-setup',2,[photo('/assets/reference/imager-flow.svg?v=16.0.0','Choose device, OS, and storage','Verify Raspberry Pi 5, Raspberry Pi OS Desktop, and the intended microSD card before continuing.')]);
+  setLessonPhotos('pi-setup',3,[photo('/assets/reference/imager-customize.svg?v=16.0.0','Preconfigure Imager','Set Wi-Fi, hostname, locale, username, and SSH before writing the card.')]);
+  setLessonPhotos('pi-setup',4,[photo('/assets/reference/imager-write.svg?v=16.0.0','Write, verify, and eject','Use the write-and-verify diagram before moving the microSD card to the powered-off Pi.')]);
+  setLessonPhotos('pi-setup',5,[photo('/assets/reference/first-boot.svg?v=16.0.0','First boot','The first boot should progress to a usable Raspberry Pi OS desktop.')]);
+  setLessonPhotos('pi-setup',6,[photo('/assets/reference/software-tools.svg?v=16.0.0','Shared project tools','Once Raspberry Pi OS is stable, use Terminal to install the shared project tools.')]);
+  setLessonPhotos('pi-setup',7,[photo('/assets/reference/health-check.svg?v=16.0.0','Foundation complete','Run the health check and cold-boot test before beginning a project path.')]);
+
+  setLessonPhotos('smart-mirror',0,[
+    photo('/assets/lesson-photos/smart-mirror-finished.png','Mirror effect reference','Use this high-resolution appearance reference while testing your own acrylic, room lighting, and display brightness.'),
+    photo('/assets/lesson-photos/smart-mirror-kit.png','Mirror build kit','Keep every part loose until the optical test passes.')
+  ]);
+  setLessonPhotos('smart-mirror',1,[
+    photo('/assets/lesson-photos/smart-mirror-kit.png','Parts before dry-fit','Lay out the display, Pi, frame, mirror sheet, mask, and cables before mounting.'),
+    photo('/assets/lesson-photos/smart-mirror-frame-build.png','Frame-layer reference','Use the frame photo to understand the physical relationship between the display, mirror, Pi, and cable exit.')
+  ]);
+  setLessonPhotos('smart-mirror',2,[photo('/assets/lesson-photos/smart-mirror-frame-build.png','Mount and blackout reference','Mount only to rigid display edges, then use matte black material to hide the inactive cavity.')]);
+  setLessonPhotos('smart-mirror',3,[
+    photo('/assets/lesson-photos/dsi-ribbon-seated.png','Seat DSI ribbon','High-resolution connector reference: the ribbon should be straight, fully inserted, and held by the closed latch.'),
+    photo('/assets/reference/dsi-ribbon.svg?v=16.0.0','DSI orientation diagram','Use this crisp diagram to verify contact and stiffener orientation against your exact connector.')
+  ]);
+  setLessonPhotos('smart-mirror',4,[
+    photo('/assets/lesson-photos/smart-mirror-frame-build.png','Kiosk layout context','The physical build should leave ventilation, the display surface, and the cable path unobstructed.'),
+    photo('/assets/lesson-photos/smart-mirror-finished.png','Finished mirror reference','Keep the visible UI sparse and black-background so it works through the acrylic.')
+  ]);
+
+  const by=(s,r=document)=>r.querySelector(s);
+  const all=(s,r=document)=>[...r.querySelectorAll(s)];
+  function openFoundation(){
+    const button=by('#projectGrid [data-open="pi-setup"]');
+    if(button)button.click();
+  }
+  function openInventory(){
+    const button=by('.nav button[data-view="inventory"]');
+    if(button)button.click();
+  }
+  function decorateHome(){
+    const brand=by('.brand');
+    if(brand){const words=brand.querySelectorAll('strong,small');if(words[0])words[0].textContent='Pi Path';if(words[1])words[1].textContent='Build with confidence'}
+    const top=by('.top-title');
+    if(top&&!top.dataset.v16){top.dataset.v16='true';top.innerHTML='Pi Path <span>Interactive Raspberry Pi courses</span>'}
+    const nav=['Learning paths','Pi reference','My inventory','My progress','How this works'];
+    all('.nav button').forEach((button,index)=>{if(nav[index])button.innerHTML=button.innerHTML.replace(/(⌂|◉|▣|◔|\?)(?:\s|&nbsp;)+.*$/,`$1 &nbsp; ${nav[index]}`)});
+    const hero=by('#homeView .hero');
+    if(hero&&!hero.dataset.v16){
+      hero.dataset.v16='true';
+      const copy=by('.hero-copy',hero),stats=by('.hero-stats',hero);
+      if(copy)copy.innerHTML=`<div class="eyebrow">A better way to build with Raspberry Pi</div><p class="hero-kicker">Learn the foundation. Build what you own.</p><h1>From a box of parts to a project you’re proud to use.</h1><p>Pick a path based on your inventory, follow one focused lesson at a time, and use the visual reference at every decision point.</p><div class="hero-actions"><button class="primary" id="startFoundation">Start the Pi 5 foundation <span>→</span></button><button class="hero-link" id="checkInventory">Check my materials</button></div><div class="course-path"><span><b>01</b> Prepare your Pi</span><i></i><span><b>02</b> Choose a build</span><i></i><span><b>03</b> Complete each lesson</span></div>`;
+      if(stats){stats.classList.add('hero-art');stats.innerHTML=`<img src="/assets/course-hero.png?v=16.0.0" alt="Raspberry Pi 5 project parts arranged on a workbench"><div class="hero-art-label"><span>YOUR WORKBENCH</span><strong>Ready for the next build</strong></div><div class="stat-grid"><div class="stat"><b id="projectCount">11</b><span>learning paths</span></div><div class="stat"><b id="phaseCount">0</b><span>guided lessons</span></div><div class="stat"><b id="visualCount">0</b><span>visual references</span></div><div class="stat"><b id="overallPct">0%</b><span>your progress</span></div></div>`}
+      by('#startFoundation')?.addEventListener('click',openFoundation);by('#checkInventory')?.addEventListener('click',openInventory);
+    }
+    const heading=by('#homeView .section-head');
+    if(heading&&!heading.dataset.v16){heading.dataset.v16='true';const copy=heading.querySelector('div');if(copy)copy.innerHTML='<div class="eyebrow">Choose your next build</div><h2>Start with a path that fits your parts</h2><p>Every course is organized as short, checkable lessons with a visual guide, clear success checks, and troubleshooting where it matters.</p>'}
+    all('#projectGrid .project-card').forEach((card,index)=>{card.style.setProperty('--course-glow',['rgba(255,95,126,.55)','rgba(93,183,255,.5)','rgba(105,227,189,.5)','rgba(255,190,93,.46)'][index%4]);const visual=by('.project-visual',card);if(visual)visual.setAttribute('aria-label','Visual course card')});
+  }
+  function decorateCourse(){
+    const kicker=by('#courseView .step-kicker');
+    if(kicker&&kicker.textContent.includes('Phase'))kicker.textContent=kicker.textContent.replace('Phase','Lesson');
+    all('#courseView .phase-row').forEach(row=>{const label=by('small',row);if(label&&label.textContent.startsWith('Phase '))label.textContent=label.textContent.replace(/^Phase /,'Lesson ')});
+    const listHeading=all('#courseView .panel h2').find(node=>node.textContent.trim()==='Course phases');
+    if(listHeading)listHeading.textContent='Course map';
+    const actionHead=all('#courseView .section-head h2').find(node=>node.textContent.trim()==='Do this, in order');
+    if(actionHead)actionHead.textContent='Your lesson checklist';
+    all('#courseView .visual-frame').forEach(frame=>{const image=by('img',frame),badge=by('.visual-badge',frame);if(image&&badge&&/\.svg(?:\?|$)/.test(image.src)&&badge.textContent!=='STEP DIAGRAM')badge.textContent='STEP DIAGRAM'});
+    const next=by('#nextPhase');if(next&&next.textContent!=='Next lesson →')next.textContent='Next lesson →';
+    const prev=by('#prevPhase');if(prev&&prev.textContent!=='← Previous lesson')prev.textContent='← Previous lesson';
+  }
+  function decorate(){decorateHome();decorateCourse()}
+  decorate();
+  new MutationObserver(()=>requestAnimationFrame(decorate)).observe(document.body,{childList:true,subtree:true});
+})();

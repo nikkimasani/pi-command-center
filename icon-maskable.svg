@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#070b12"/>
-  <text x="256" y="340" font-size="260" text-anchor="middle" font-family="Apple Color Emoji,Segoe UI Emoji">🍓</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Raspberry icon"><rect width="256" height="256" rx="48" fill="#070b12"/><g fill="#d81b60"><circle cx="92" cy="102" r="28"/><circle cx="128" cy="88" r="30"/><circle cx="164" cy="102" r="28"/><circle cx="78" cy="137" r="27"/><circle cx="112" cy="128" r="29"/><circle cx="148" cy="128" r="29"/><circle cx="178" cy="137" r="27"/><circle cx="96" cy="166" r="26"/><circle cx="128" cy="166" r="29"/><circle cx="160" cy="166" r="26"/><circle cx="128" cy="194" r="24"/></g><g fill="#58a83f"><path d="M128 70c-7-24 7-42 29-50 1 21-7 38-29 50Z"/><path d="M126 69c-22-10-30-29-24-49 20 7 32 22 24 49Z"/><path d="M132 70c13-20 34-24 52-13-13 17-30 25-52 13Z"/></g><circle cx="128" cy="140" r="10" fill="#f06292" opacity=".35"/></svg>

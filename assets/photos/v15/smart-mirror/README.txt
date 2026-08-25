@@ -1,0 +1,1 @@
+High-resolution Smart Mirror assets for exact phase mappings.

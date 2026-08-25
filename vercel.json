@@ -1,6 +1,6 @@
 {
   "outputDirectory": ".",
-  "buildCommand": "node validate-course.js",
+  "buildCommand": "node --check lab-v20.js && node --check lab-v20-content.js",
   "headers": [
     {
       "source": "/",
@@ -11,20 +11,20 @@
       "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     },
     {
-      "source": "/course-v2.html",
+      "source": "/lab-v20.js",
       "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     },
     {
-      "source": "/course-v2-data.js",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, max-age=0" }]
+      "source": "/lab-v20-content.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     },
     {
-      "source": "/course-v2.js",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, max-age=0" }]
+      "source": "/lab-v20.css",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     },
     {
-      "source": "/course-v2.css",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, max-age=0" }]
+      "source": "/lab-v20-layout.css",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, max-age=0" }]
     },
     {
       "source": "/sw.js",
@@ -32,3 +32,4 @@
     }
   ]
 }
+

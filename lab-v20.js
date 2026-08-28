@@ -3,9 +3,168 @@
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let S={view:'dashboard',courseId:'foundation',lesson:0,answers:{},checks:{},labFilter:'All'};
   try{S={...S,...JSON.parse(localStorage.getItem('pi-lab-v21'))}}catch{}
+  // Keep completion and resume data, but always begin a new visit on Dashboard.
+  S.view='dashboard';
   const save=()=>localStorage.setItem('pi-lab-v21',JSON.stringify(S));
   navigator.serviceWorker?.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()));
   const course=id=>D.courses.find(x=>x.id===id),ready=()=>D.courses.filter(x=>x.status==='ready');
+  // Each photo is a distinct, generated illustrative reference for its own action.
+  // The written instructions, pin assignments, commands, and official sources remain authoritative.
+  const illustrativePhotos={
+    'electronics-lab':[
+      ['electronics-gpio-header-v21.png','Raspberry Pi 5 GPIO header on a workbench'],
+      ['electronics-led-wire-v21.png','Raspberry Pi LED circuit with resistor on a breadboard'],
+      ['electronics-led-blink-v21.png','LED blink test connected to a Raspberry Pi'],
+      ['electronics-button-v21.png','Pushbutton input circuit connected to a Raspberry Pi'],
+      ['electronics-combo-v21.png','Combined Raspberry Pi button and LED circuit']
+    ],
+    pomodoro:[
+      ['pomodoro-plan-v22.png','Pomodoro components laid out before wiring'],
+      ['pomodoro-script-v22.png','The same Pomodoro button and LED circuit wired to a Raspberry Pi'],
+      ['pomodoro-test-v22.png','The same Pomodoro circuit running with its LED lit'],
+      ['pomodoro-autostart-v22.png','The finished Pomodoro station with the same button and LED circuit']
+    ],
+    'photo-frame':[
+      ['photo-frame-prepare-v21.png','Photos prepared beside a Raspberry Pi photo-frame workstation'],
+      ['photo-frame-install-v21.png','Raspberry Pi display and keyboard while installing slideshow software'],
+      ['photo-frame-slideshow-v21.png','Raspberry Pi photo frame showing a tested slideshow'],
+      ['photo-frame-autostart-v21.png','Finished Raspberry Pi photo frame ready for automatic startup']
+    ],
+    'desk-info':[
+      ['desk-info-plan-v21.png','Raspberry Pi desk display materials arranged before setup'],
+      ['desk-info-install-v21.png','Raspberry Pi temporary display during dashboard installation'],
+      ['desk-info-config-v21.png','Raspberry Pi dashboard configuration workstation'],
+      ['desk-info-autostart-v21.png','Raspberry Pi desk display prepared for automatic launch'],
+      ['desk-info-validate-v21.png','Finished Raspberry Pi desk information display in use']
+    ],
+    'home-assistant':[
+      ['ha-image-v21.png','Raspberry Pi Home Assistant OS preparation with microSD card'],
+      ['ha-onboard-v21.png','Raspberry Pi connected to a network for Home Assistant onboarding'],
+      ['ha-dashboard-v21.png','Home Assistant dashboard design on a Raspberry Pi workstation'],
+      ['ha-panel-v21.png','Finished Home Assistant display panel']
+    ],
+    'ai-terminal':[
+      ['ai-check-v21.png','Raspberry Pi workstation checked before installing a local AI runtime'],
+      ['ai-install-v21.png','Raspberry Pi workstation during local AI runtime installation'],
+      ['ai-model-v21.png','Raspberry Pi workstation while testing a compact local model'],
+      ['ai-routine-v21.png','Finished Raspberry Pi local AI terminal workstation']
+    ],
+    cyberdeck:[
+      ['cyberdeck-fit-v21.png','Portable Raspberry Pi cyberdeck parts laid out for a fit check'],
+      ['cyberdeck-software-v21.png','Open Raspberry Pi cyberdeck during power-management setup'],
+      ['cyberdeck-keyboard-v21.png','Portable Raspberry Pi cyberdeck with keyboard setup'],
+      ['cyberdeck-validate-v21.png','Finished Raspberry Pi cyberdeck running away from wall power']
+    ],
+    'personal-dashboard':[
+      ['personal-dashboard-plan-v21.png','Raspberry Pi personal dashboard materials and display planned on a desk'],
+      ['personal-dashboard-kiosk-v21.png','Raspberry Pi screen in a dedicated dashboard kiosk setup'],
+      ['personal-dashboard-escape-v21.png','Raspberry Pi dashboard workstation with keyboard recovery path'],
+      ['personal-dashboard-autostart-v21.png','Finished Raspberry Pi personal dashboard ready to start automatically']
+    ],
+    'linux-basics':[
+      ['linux-prompt-v21.png','Raspberry Pi desktop with a new terminal prompt'],
+      ['linux-navigate-v21.png','Raspberry Pi desktop exploring terminal and folders'],
+      ['linux-files-v21.png','Raspberry Pi project workspace for creating and reading files'],
+      ['linux-permissions-v21.png','Raspberry Pi workspace illustrating careful permissions work'],
+      ['linux-apt-v21.png','Raspberry Pi connected by Ethernet during a software update'],
+      ['linux-help-v21.png','Raspberry Pi workstation using documentation and terminal help']
+    ],
+    'python-fundamentals':[
+      ['python-first-v22.png','Raspberry Pi workstation ready to run a first Python script'],
+      ['python-types-v22.png','Raspberry Pi workspace representing Python values and basic types'],
+      ['python-conditionals-v22.png','Raspberry Pi workspace representing a Python decision branch'],
+      ['python-loops-v22.png','Raspberry Pi workspace representing repeated Python work'],
+      ['python-functions-v22.png','Raspberry Pi workspace representing organized reusable Python code'],
+      ['python-venv-v22.png','Raspberry Pi project workspace for a Python virtual environment']
+    ],
+    pihole:[
+      ['pihole-plan-v22.png','Raspberry Pi and home-network hardware prepared for Pi-hole'],
+      ['pihole-install-v22.png','Raspberry Pi connected to a home network during Pi-hole installation'],
+      ['pihole-dashboard-v22.png','Raspberry Pi home-network station with a dashboard reference'],
+      ['pihole-network-v22.png','Raspberry Pi and router showing the network DNS connection stage'],
+      ['pihole-maintain-v22.png','Raspberry Pi Pi-hole station during routine maintenance']
+    ],
+    retropie:[
+      ['retropie-plan-v22.png','RetroPie hardware and a separate microSD card prepared before installation'],
+      ['retropie-image-v22.png','RetroPie image being written to a microSD card'],
+      ['retropie-controller-v22.png','Raspberry Pi RetroPie station with a controller ready for first setup'],
+      ['retropie-roms-v22.png','Raspberry Pi RetroPie workstation during file transfer'],
+      ['retropie-bluetooth-v22.png','Raspberry Pi RetroPie setup with a wireless controller'],
+      ['retropie-finish-v22.png','Finished Raspberry Pi RetroPie gaming station']
+    ],
+    'security-camera':[
+      ['camera-connect-v22.png','Raspberry Pi camera module and CSI ribbon prepared for safe connection'],
+      ['camera-detect-v22.png','Connected Raspberry Pi camera module during detection'],
+      ['camera-capture-v22.png','Raspberry Pi camera module prepared to capture a photo or video'],
+      ['camera-motion-v22.png','Raspberry Pi camera aimed at a scene for motion detection'],
+      ['camera-mount-v22.png','Finished Raspberry Pi security camera mounted for use']
+    ],
+    'weather-station':[
+      ['weather-wire-v22.png','Raspberry Pi and weather sensor wired on a breadboard'],
+      ['weather-venv-v22.png','Raspberry Pi weather sensor project during software setup'],
+      ['weather-read-v22.png','Raspberry Pi weather sensor ready to report live readings'],
+      ['weather-log-v22.png','Raspberry Pi weather station logging a history of readings'],
+      ['weather-review-v22.png','Finished Raspberry Pi weather station reviewing its data']
+    ]
+  };
+  Object.entries(illustrativePhotos).forEach(([courseId,photos])=>{
+    const c=course(courseId);
+    if(!c)return;
+    photos.forEach(([file,alt],index)=>{
+      if(!c.lessons[index])return;
+      Object.assign(c.lessons[index],{
+        kind:'photo',
+        image:`https://pi-command-center-cloudflare.pages.dev/assets/lesson-photos/${file}`,
+        alt,
+        caption:'Illustrative step reference. Follow the written procedure, exact commands, and official source links for your specific hardware and software version.'
+      });
+    });
+  });
+  // Foundation and Smart Mirror originally retained their compact step maps.
+  // Keep those maps available in the curriculum data, but lead each of these
+  // lessons with a realistic action-specific reference photo instead.
+  const precisePhotoOverrides={
+    foundation:[
+      [1,'foundation-imager-install-v23.png','Raspberry Pi Imager installed on a Windows laptop beside an unopened Pi kit and untouched microSD card','Install Imager on your computer before inserting or selecting any storage.'],
+      [2,'foundation-imager-select-v23.png','Raspberry Pi Imager showing the Pi, operating-system, and storage selection workflow','Confirm the device, operating system, and intended microSD card before writing.'],
+      [5,'foundation-imager-write-v23.png','Verified microSD card being installed in a powered-off Raspberry Pi 5','Eject after verification, insert the card while the Pi is off, then connect power last.']
+    ],
+    mirror:[
+      [1,'mirror-temporary-display-v23.png','Raspberry Pi 5 running MagicMirror on a temporary HDMI monitor','Prove the dashboard works on an accessible temporary display before it goes into a frame.'],
+      [4,'mirror-configure-v23.png','Raspberry Pi MagicMirror configuration on a temporary monitor','Configure the layout, rotation, and modules while the display is still easy to reach.'],
+      [5,'mirror-autostart-v23.png','Raspberry Pi MagicMirror dashboard booted on a temporary HDMI monitor','Verify PM2 autostart and a clean reboot before the mirror is mounted.']
+    ]
+  };
+  Object.entries(precisePhotoOverrides).forEach(([courseId,photos])=>{
+    const c=course(courseId); if(!c)return;
+    photos.forEach(([index,file,alt,caption])=>{
+      if(!c.lessons[index])return;
+      Object.assign(c.lessons[index],{kind:'photo',image:`https://pi-command-center-cloudflare.pages.dev/assets/lesson-photos/${file}`,alt,caption});
+    });
+  });
+  // Card covers make the Labs grid scannable at a glance.  Reuse the most
+  // representative visual from a lab's own sequence; the six newest labs
+  // receive a dedicated project cover.
+  const labCovers={
+    'electronics-lab':'electronics-combo-v21.png',
+    pomodoro:'pomodoro-autostart-v22.png',
+    'photo-frame':'photo-frame-autostart-v21.png',
+    'desk-info':'desk-info-validate-v21.png',
+    'home-assistant':'ha-panel-v21.png',
+    'ai-terminal':'ai-routine-v21.png',
+    cyberdeck:'cyberdeck-validate-v21.png',
+    'personal-dashboard':'personal-dashboard-autostart-v21.png',
+    'linux-basics':'linux-basics-cover-v21.png',
+    'python-fundamentals':'python-fundamentals-cover-v21.png',
+    pihole:'pihole-cover-v21.png',
+    retropie:'retropie-cover-v21.png',
+    'security-camera':'security-camera-cover-v21.png',
+    'weather-station':'weather-station-cover-v21.png'
+  };
+  Object.entries(labCovers).forEach(([courseId,file])=>{
+    const c=course(courseId);
+    if(c)c.cover=`https://pi-command-center-cloudflare.pages.dev/assets/lesson-photos/${file}`;
+  });
   const key=(c,i)=>`${c.id}:${i}`,done=(c,i)=>S.checks[key(c,i)]?.every(Boolean)&&S.answers[key(c,i)]===c.lessons[i].check.answer;
   const progress=c=>c.lessons.length?Math.round(c.lessons.filter((_,i)=>done(c,i)).length/c.lessons.length*100):0;
   const diagram=t=>{const m={

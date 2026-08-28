@@ -1,0 +1,68 @@
+/* Mobile/tablet navigation override: keep every primary Pi Lab tab reachable. */
+@media (max-width: 900px) {
+  header {
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  header nav {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px 0;
+  }
+
+  header nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  header nav button,
+  header nav button:nth-child(2) {
+    display: inline-flex !important;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .student {
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 620px) {
+  header {
+    height: auto;
+    min-height: 66px;
+    padding: 8px 12px;
+    align-items: center;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    font-size: 17px;
+  }
+
+  .brand-mark {
+    height: 26px;
+  }
+
+  header nav {
+    order: 2;
+    flex-basis: 100%;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+
+  header nav button {
+    min-height: 38px;
+    padding: 8px 12px;
+  }
+
+  .student {
+    display: none;
+  }
+}
